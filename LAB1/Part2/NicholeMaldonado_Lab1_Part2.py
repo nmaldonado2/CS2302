@@ -5,7 +5,6 @@
 # Anindita Nath
 
 import time
-import requests
 import os
 
 
@@ -13,19 +12,23 @@ import os
 # Inputs:
 # Outputs:
 def ReadAndStoreTextFromFile(fileName):
-#    try:
+    try:
         # Opens file to be read and evaluated
-    file = open(fileName, "r")
-    
-    englishWordSet = set()
-    
-    line = file.readline()
-    while line:
-        # Adds each word to englishWordSet without the appended endline
-        englishWordSet.add(line.rstrip("\n"))
+        file = open(fileName, "r")
+        
+        englishWordSet = set()
+        
         line = file.readline()
-#    except: 
-#        return None
+        while line:
+            # Adds each word to englishWordSet without the appended endline
+            englishWordSet.add(line.rstrip("\n"))
+            line = file.readline()
+    except FileNotFoundError: 
+        print("The words_alpha file could not be found")
+        return None
+    except IOError:
+        print("The words_alpha file could not be accessed")
+        return None
     
     file.close()
     return englishWordSet
@@ -48,12 +51,18 @@ def FindAnagrams(remaining_word, appending_word, englishWordSet, anagrams, origi
         FindAnagrams(newRemainingWord, appending_word + newLetterToAppend, englishWordSet, anagrams, original_word)
     
     
-response = requests.get("https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt")
-if response:
-    print("In here")
-    fileName = os.path.join(getcwd(), "words_alpha.txt")
-    print(fileName)
-    englishWordSet = ReadAndStoreTextFromFile(fileName)
+#response = requests.get("https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt")
+#if response:
+
+#fileName = os.path.join(os.getcwd(), "words_alph.txt")
+fileName = "words_alpha.txt"
+englishWordSet = ReadAndStoreTextFromFile(fileName)
+
+if englishWordSet is None:
+    print("Please make sure the words_alpha.txt is in the current program directory")
+    print("Program terminating")
+
+else:
     wordOrEmptyString = input("Enter a word or empty string to finish: ").lower()
     
     while len(wordOrEmptyString) > 0:
@@ -75,5 +84,5 @@ if response:
         wordOrEmptyString = input("Enter a word or empty string to finish: ").lower()
         
     print("Bye, thanks for using this program!")
-else:
-    print("An error occured while loading the file. Program terminating")
+#else:
+#    print("An error occured while loading the file. Program terminating")
