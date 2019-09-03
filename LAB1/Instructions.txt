@@ -1,0 +1,30 @@
+Both Part 1's and Part 2's program must be run seperately.
+
+In order for the program to run smoothly, the alpha_words.txt file must be in the same directory as the programs
+from Part 1 and Part 2.
+
+In the event that the words_alpha.txt file is not in the same directory as the programs, the program will prompt
+you to input the directory of where the alpha_words.txt file is located. Type the directory, without the file name,
+and the program will run accordingly.
+
+For example, say the programs are in /Users/nichole_maldonado/Desktop and the words_alpha.txt file is in
+/Users/nichole_maldonado/Desktop/folder, the program will prompt you update the file directory. So in this case
+type in: /Users/nichole_maldonado/Desktop/folder
+
+Additionally, for the test cases that print the number of recursive calls uncomment the following
+lines to view the results:
+
+Part 1:
+  Line: 60, 61, 150, 179, 180
+Part 2:
+  Line: 59, 60, 162, 208, 209
+  
+For the test cases that print the words in the anagram set (before they are alphabatized and
+before duplicates are removed for Part 1), uncomment the following lines:
+
+Part 1:
+  Line: 178
+Part 2:
+  Line: 207 
+  
+Please comment all lines back afterwards to ensure that the program runs accordingly.
