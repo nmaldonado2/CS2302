@@ -15,9 +15,9 @@ Additionally, for the test cases that print the number of recursive calls uncomm
 lines to view the results:
 
 Part 1:
-  Line: 60, 61, 150, 179, 180
+  Line: 62, 63, 150, 179, 180
 Part 2:
-  Line: 59, 60, 162, 208, 209
+  Line: 59, 60, 167, 215, 216
   
 For the test cases that print the words in the anagram set (before they are alphabatized and
 before duplicates are removed for Part 1), uncomment the following lines:
@@ -25,6 +25,6 @@ before duplicates are removed for Part 1), uncomment the following lines:
 Part 1:
   Line: 178
 Part 2:
-  Line: 207 
+  Line: 214 
   
 Please comment all lines back afterwards to ensure that the program runs accordingly.
