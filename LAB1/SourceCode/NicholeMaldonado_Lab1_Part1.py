@@ -41,10 +41,10 @@ def ReadAndStoreTextFromFile(filePath):
     
     # If a FileNotFoundError or IOError occurs, then None is returned.
     except FileNotFoundError: 
-        print("\nThe file containing the list of English words could not be found.")
+        print("The file containing the list of English words could not be found.")
         return None
     except IOError:
-        print("\nThe file containing the list of English words could not be accessed.")
+        print("The file containing the list of English words could not be accessed.")
         return None
     return englishWordSet
 
@@ -111,6 +111,7 @@ def CheckIfTxtFile(filePath):
 print("Enter the file path for the English word set below.")
 print("Please remember to include the file's directory and name.")
 filePath = input("File Path: ")
+print()
 
 englishWordSet = ReadAndStoreTextFromFile(filePath)
 
