@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 2, 2019
+# Date of Last Modification: October 3, 2019
 # Assignment: Lab 3 - Linked Lists
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -446,7 +446,6 @@ class List:
         # Appends Nodes to the dummy_node, based on the value of the current
         # Nodes referenced by left_curr and right_curr.
         while not left_curr.next is None and not right_curr is None:
-            
             # If the right_curr has data less than or equal to the left_curr
             # data, then the right_curr Node is inserted before the left_curr
             if right_curr.data <= left_curr.next.data:
@@ -468,16 +467,19 @@ class List:
     # Input: the list to be sorted.
     # Output: a merged list that is sorted in ascending order.
     def MergeSort(self, n):
-        if n is None or n.next is None:
-            return n
+        if n is None:
+            return None
+        if n.next is None:
+            return Node(n.data)
         
+
         # Retrieves the left and right sublist.
         left_list, right_list = self.Split(n)
-        
+
         # Performs mergeSort on the left and righ sublists.
         left_list = self.MergeSort(left_list)
         right_list = self.MergeSort(right_list)
-        
+
         # Returns the merged, ordered left and right sublist.
         return self.MergeList(left_list, right_list)        
     
@@ -488,10 +490,10 @@ class List:
     def HasDuplicates(self):
         if self.head is None:
             return False
-        
+
         # Sorts a copy of the current List
         sorted_list = self.MergeSort(self.head)
-        
+
         curr = sorted_list
         
         # The List is iterated through until duplicates are found or
@@ -525,7 +527,7 @@ class List:
             left_list.tail.next = Node(lag.data)
             left_list.tail = left_list.tail.next
             fast = fast.next.next
-        
+
         # The right sublist consists of all Nodes after lag.
         return left_list.head, lag.next        
     

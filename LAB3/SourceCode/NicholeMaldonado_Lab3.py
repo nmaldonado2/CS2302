@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 2, 2019
+# Date of Last Modification: October 3, 2019
 # Assignment: Lab 3 - Linked Lists
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -440,21 +440,21 @@ def select_performance_test(sizeList, willPrint):
             start_time = time.perf_counter()
             element = list_of_lists[i].Select(0)
             elapsed_time = time.perf_counter() - start_time
-            print("kth smallest element, k = 0: ", element)
+            print("kth smallest element, k = 0:", element)
             print("kth element: %.6f ms" % elapsed_time)
             
             # Initiates the Select function to return the largest element.
             start_time = time.perf_counter()
             element = list_of_lists[i].Select(size - 1)
             elapsed_time = time.perf_counter() - start_time
-            print("kth smallest element, k =", size - 1, ":", element)
+            print("kth smallest element, k = ", size - 1, ": ", element, sep = "")
             print("kth element: %.6f ms" % elapsed_time)
             
             # Initiates the Select function to return a random kth value.
             start_time = time.perf_counter()
             element = list_of_lists[i].Select(random_index)
             elapsed_time = time.perf_counter() - start_time
-            print("kth smallest element, k =",  random_index, ":", element)
+            print("kth smallest element, k = ",  random_index, ": ", element, sep = "")
             print("kth element: %.6f ms\n" % elapsed_time)
 
 # Function that converts a string of integers seperated by spaces to a 
@@ -463,16 +463,18 @@ def select_performance_test(sizeList, willPrint):
 # Output: A list with the elements SortedList and List which were
 #         populated by the user.
 def str_list_to_linked_list():
-    print("Enter a list of number seperated by spaces or press ", end = "")
+    print("Enter a list of number seperated by spaces or press", end = "")
     print(" enter for an empty linked list.")
-    str_list = input("Linked list: ").split(" ")
+    str_list = input("Linked list: ")
     list_of_lists = [SortedList(), List()]
     print()
-    
+
     # If the user only pressed enter, a list comprised of an empty
     # SortedList and List is returned.
-    if str_list is None:
+    if len(str_list) == 0:
         return list_of_lists
+    
+    str_list = str_list.split(" ")
     
     # Otherwise each list is populated with the data received from the user.
     for i in range(len(str_list)):
@@ -654,10 +656,10 @@ def custom_max_test(list_of_lists):
         else:
             print("List")
             
-        # Calculates the performance time for the Min function and displays
-        # the minimum value returned.
+        # Calculates the performance time for the Max function and displays
+        # the maximum value returned.
         start_time = time.perf_counter()
-        max = list_of_lists[i].Min()
+        max = list_of_lists[i].Max()
         elapsed_time = time.perf_counter() - start_time
         print("Maximum value:", max)
         print("Maxiumum: %.6f ms\n" %  elapsed_time)
@@ -769,7 +771,7 @@ def custom_list():
         
         # Informs the user if an incorrect value was entered.
         except ValueError:
-            print("Invalid input. Operation was not performed.")
+            print("Invalid input. Operation was not performed.\n")
     
     # Informs the user if an incorrect menu number was entered.
     if menu_num != 11:
