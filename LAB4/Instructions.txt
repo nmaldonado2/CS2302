@@ -16,3 +16,6 @@ after finding the pairs and their similarity.
 
 Additionally, the TestTrialFile contains all the files used during testing. The performance time based on each file is 
 recorded in the report.
+
+The FileCreation.py file found in SourceCode was the code used to generate the test files.  It is not integral to the
+functionality of the program but is still provided for reference.
