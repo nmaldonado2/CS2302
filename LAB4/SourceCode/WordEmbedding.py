@@ -4,11 +4,11 @@
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab was read a file containing word embeddings
+# Purpose: The purpose of this lab was to read a file containing word embeddings
 #          and populate a Binary Search Tree (BST) or B-Tree with 
-#          WordEmbedding objects.  The similairts of the word 
-#          embedding pairs from a given file is then computed.  The following 
-#          file contains the class for WordEmbedding. The embedding attribute
+#          WordEmbedding objects.  The similarities of the word 
+#          embedding pairs from a given file are then computed.  The following 
+#          file contains the WordEmbedding calss. The embedding attribute
 #          must be a list or array of length 50 for this lab.
 
 import numpy as np

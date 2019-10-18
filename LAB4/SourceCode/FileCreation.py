@@ -4,7 +4,7 @@
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab was read a file containing word embeddings
+# Purpose: The purpose of this lab was to read a file containing word embeddings
 #          and populate a Binary Search Tree (BST) or B-Tree with 
 #          WordEmbedding objects.  The similairty of the word embedding pairs
 #          from a given file is then computed. The following file adds the word

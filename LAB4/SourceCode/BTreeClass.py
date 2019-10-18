@@ -1,16 +1,16 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 12, 2019
+# Date of Last Modification: October 18, 2019
 # Assignment: Lab 4 - Binary Search Trees and B-Trees
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab was read a file containing word embeddings
+# Purpose: The purpose of this lab was to read a file containing word embeddings
 #          and populate a Binary Search Tree (BST) or B-Tree with 
 #          WordEmbedding objects.  The similarities of the word 
-#          embedding pairs from a given file is then computed.  The following 
-#          file contains class for the BST and corresponding functions
-#          to find the number of nodes in a tree, for the height, for insertion,
-#          and for search.
+#          embedding pairs from a given file are then computed.  The following 
+#          file contains the BST class and corresponding functions such as
+#          insertion, search, finding the height and finding the number of
+#          nodes.
 
 # Provided by the instructor.
 # Class BTree
@@ -85,8 +85,7 @@ def FindChildBinarySearch(T, key, start, end):
 
 # Outer method for the inner recursive method that finds the appropriate child
 # of T based on val.
-# Input: The parent T B-Tree node and the value.  The index of T's child
-#        where val could potentially be located will be returned.
+# Input: The parent T B-Tree node and the value.
 # Output:The index of T's child where val could potentially be located will be 
 #        returned.
 def FindChild(T, val):
@@ -225,7 +224,7 @@ def IsFull(T):
 # Output: None.
 def BTreeInsert(T, i):
     
-    # If T is not full, then i is prepared to be inserted.
+    # If T is not full, then i is inserted.
     if not IsFull(T):
         InsertInternal(T, i)
         

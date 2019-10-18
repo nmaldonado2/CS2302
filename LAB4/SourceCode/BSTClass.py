@@ -7,9 +7,9 @@
 # Purpose: The purpose of this lab was read a file containing word embeddings
 #          and populate a Binary Search Tree (BST) or B-Tree with 
 #          WordEmbedding objects.  The similarities of the word 
-#          embedding pairs from a given file is then computed.  The following 
-#          file contains class for the B-Tree.  The corresponding functions
-#          inlcude the number of nodes, the height, insertion, and search.
+#          embedding pairs from a given file are then computed.  The following 
+#          file contains the B-Tree class.  The corresponding functions
+#          inlcude insertion, search, finding the number of nodes, and height.
 
 # Provided by the instructor.
 # Class BST

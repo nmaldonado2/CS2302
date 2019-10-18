@@ -1,15 +1,15 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 12, 2019
+# Date of Last Modification: October 18, 2019
 # Assignment: Lab 4 - Binary Search Trees and B-Trees
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab was read a file containing word embeddings
+# Purpose: The purpose of this lab was to read a file containing word embeddings
 #          and populate a Binary Search Tree (BST) or B-Tree with 
 #          WordEmbedding objects.  A second file is then read with a pair
-#          of word per line, seperated by commas.  The similarity of these
-#          words will be calculated by the cosine distance between them. The
-#          similarities will be displayed as well as the running times for the
+#          of words per line, seperated by commas.  The similarity of these
+#          words are then calculated by the cosine distance between them. The
+#          similarities are displayed as well as the running times for the
 #           consturction of the tree and the similarity calculations.
 
 import BTreeClass as bt
@@ -56,7 +56,7 @@ def file_to_bst(file_path_words):
 # Output: The B-Tree created and the running time for the tree's consturction.
 def file_to_btree(file_path_words, max_items):
     
-    # Opens the file to read from it.
+    # Opens the file to read.
     word_file = open(file_path_words, "r")
     line = word_file.readline()
     
@@ -99,23 +99,23 @@ def print_similarities(list_similarities):
     
 def print_non_analyzed_pairs(non_analyzed_pairs):
     print("The following line was not analyzed since one or more", end = " ")
-    print("embeddings could not be found or the line's format was incorrect")
+    print("embeddings could not be found or the line's format was incorrect.")
     for pair in non_analyzed_pairs:
         print(pair)
     print()
     
-# Recieves a pair of words and searches for the corresponding WordEmbedding
+# Receives a pair of words and searches for the corresponding WordEmbedding
 # objects in the BST. Also intiates the calculation of the words' similarity.
 # Input: The BST containing WordEmbedding objects and a list containing two
 #        words.
-# Output: The running time for finding the similairites of all the pairs.
+# Output: The running time for finding the similairites of the pair.
 # Assume pair is a list with only two words, one at index 0 and one at index 1.
 # Also assume the words only contain lower-case letters.
 def find_similarity_bst(T, pair):
     
-    # Does not find the similarities if the tree is empty.
+    # Similarities are not found if the tree is empty.
     if T is None:
-        print("Empty tree.  The similarities were not compared.")
+        print("Empty tree.  The similarities were not calculated.")
         return
     
     start_time = time.perf_counter()
@@ -130,7 +130,7 @@ def find_similarity_bst(T, pair):
         similarity = compute_similarity(embedding1, embedding2)
         end_time = time.perf_counter()
         
-        # Initiates the printing of the list_words.
+        # Initiates the printing of the results.
         print_similarities([[pair[0], pair[1], similarity]])
     else:
         end_time = time.perf_counter()
@@ -148,7 +148,7 @@ def find_similarities_file_bst(T, file_path_pairs):
     
     # Does not find the similarities if the tree is empty.
     if T is None:
-        print("Empty tree.  The similarities were not compared.")
+        print("Empty tree.  The similarities were not calculated.")
         return
     
     # Reads the file containing the word pairs.
@@ -158,7 +158,7 @@ def find_similarities_file_bst(T, file_path_pairs):
     
     word_pairs = []
     
-    # Will be populated in a word embedding could not be found or a line was
+    # Will be populated if a word embedding could not be found or a line was
     # not formatted properly.
     non_analyzed_pairs = []
     
@@ -182,13 +182,13 @@ def find_similarities_file_bst(T, file_path_pairs):
                     word_pairs.append([line[0].lower(), line[1].lower(), 
                                        compute_similarity(embedding1, embedding2)])
                 
-                # If the embedding could not be found, it is added to
-                # non_analyzed pairs.
+                # If the embedding was not found, it is added to
+                # non_analyzed_pairs.
                 else:
                     non_analyzed_pairs.append(line)
                     
             # If the line does not have the proper format, it is added to
-            # non_analyzed pairs.
+            # non_analyzed_pairs.
             else:
                 non_analyzed_pairs.append(line)
         line = pairs_file.readline()
@@ -200,11 +200,11 @@ def find_similarities_file_bst(T, file_path_pairs):
     if len(non_analyzed_pairs) > 0:
         print_non_analyzed_pairs(non_analyzed_pairs)
     
-    # Initiates the printing of the list_words.
+    # Initiates the printing of the word_pairs.
     print_similarities(word_pairs)
     return end_time - start_time
 
-# Recieves a pair of words and searches for the corresponding WordEmbedding
+# Receives a pair of words and searches for the corresponding WordEmbedding
 # objects in the B-Tree. Also intiates the calculation of the words' similarity.
 # Input: The B-Tree containing WordEmbedding objects and a list containing two
 #        words.
@@ -213,9 +213,9 @@ def find_similarities_file_bst(T, file_path_pairs):
 # Also assume the words only contain lower-case letters.
 def find_similarity_btree(T, pair):
     
-    # Does not find the similarities if the tree is empty.
-    if T is None:
-        print("Empty tree.  The similarities were not compared.")
+    # Similarities are not found if the tree is empty.
+    if len(T.data) == 0:
+        print("Empty tree.  The similarities were not calculated.")
         return
     
     start_time = time.perf_counter()
@@ -230,7 +230,7 @@ def find_similarity_btree(T, pair):
         similarity = compute_similarity(embedding1, embedding2)
         end_time = time.perf_counter()
         
-        # Initiates the printing of the list_words.
+        # Initiates the printing of the results.
         print_similarities([[pair[0], pair[1], similarity]])
     else:
         end_time = time.perf_counter()
@@ -242,12 +242,12 @@ def find_similarity_btree(T, pair):
 # Reads a file of word pairs and searches for the corresponding WordEmbedding
 # objects in the B-Tree. Also intiates the calculation of the words' 
 # similarities.
-# Input: The B-Tree containing WordEmbedding objects and file path containing 
-#        the word pairs.
+# Input: The B-Tree containing WordEmbedding objects and the path for the file
+#        containing the word pairs.
 # Output: The running time for finding the similairites of all the pairs.
 def find_similarities_file_btree(T, file_path_pairs):
     
-    # Does not find the similarities if the tree is empty.
+    # Similarities are not found if the tree is empty.
     if len(T.data) == 0:
         print("Empty tree.  The similarities were not compared.")
         return
@@ -259,7 +259,7 @@ def find_similarities_file_btree(T, file_path_pairs):
     
     word_pairs = []
     
-    # Will be populated in a word embedding could not be found or a line was
+    # Will be populated if a word embedding could not be found or a line was
     # not formatted properly.
     non_analyzed_pairs = []
     
@@ -301,7 +301,7 @@ def find_similarities_file_btree(T, file_path_pairs):
     if len(non_analyzed_pairs) > 0:
         print_non_analyzed_pairs(non_analyzed_pairs)
     
-    # Initiates the printing of the list_words.
+    # Initiates the printing of the word_pairs.
     print_similarities(word_pairs)
     return end_time - start_time
 
@@ -379,7 +379,7 @@ def btree_analysis(file_path_words, pair_path_or_input):
         print("Running time for B-tree query processing", end = "")
         print(" (with max_items = %d): %.6f"%(T.max_data, perf_time))
 
-# Ensures that filePath includes a .txt file at the end.
+# Ensures that file_path includes a .txt file at the end.
 # Input: a string of the file path that will be evaluated.
 # Output: Returns false if file_path does not end in .txt and returns
 #         true otherwise.
@@ -405,11 +405,11 @@ def is_txt_file(file_path):
 # be collected.
 # Input: None
 # Output: The first output consists of a boolean value that denotes whether
-#         all file path's inputed contain a .txt file and if applicable
-#         a correct pair of words were inputted by the user. The second output
+#         all file paths entered contain a .txt file and, if applicable,
+#         a correct pair of words were selected by the user. The second output
 #         is a string of the path for the file containing the word embeddings.
 #         Lastly, the third output is a list that will contain only the path
-#         for the file containing the word pairs or a element list containing
+#         for the file containing the word pairs or a list containing
 #         a pair of words. The path or pair of words is selected by the user.
 def pairs_from_file_or_input():
     
@@ -455,14 +455,14 @@ def pairs_from_file_or_input():
 # Main method that allows the user to enter the file paths for the word
 # embeddings and word pairs.  The user is then able to select whether they
 # want to build a BST or B-BTree with WordEmbedding objects and use the
-# data structure to retieve the pairs.
+# data structure to retrieve the pairs.
 # Input: None
 # Output None
 try:
     valid_input, file_path_words, pair_path_or_input = pairs_from_file_or_input()
     
-    # If file paths are txt files or the pairs only contain two words, then
-    # the trees are built and the pairs.
+    # If file paths are .txt files or the pairs only contain two words, then
+    # the trees are built and the pairs similarites are calculated.
     if valid_input:
         
         # The user is allowed to choose a BST or B-Tree.
