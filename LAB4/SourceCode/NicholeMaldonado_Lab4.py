@@ -338,8 +338,8 @@ def bst_analysis(file_path_words, pair_path_or_input):
     else:
         perf_time = find_similarity_bst(T, pair_path_or_input)
     if not perf_time is None:
-        print("Running time for binary search tree query processing", end = "")
-        print(" %.6f"%(perf_time))
+        print("Running time for binary search tree query processing:", end = "")
+        print(" %.4f seconds"%(perf_time))
 
 # Initiates the creation of a B-Tree and prints the stats of the tree.
 # Input: The file path where the word embeddings are located.
@@ -377,7 +377,7 @@ def btree_analysis(file_path_words, pair_path_or_input):
         perf_time = find_similarity_btree(T, pair_path_or_input)
     if not perf_time is None:
         print("Running time for B-tree query processing", end = "")
-        print(" (with max_items = %d): %.6f"%(T.max_data, perf_time))
+        print(" (with max_items = %d): %.4f seconds"%(T.max_data, perf_time))
 
 # Ensures that file_path includes a .txt file at the end.
 # Input: a string of the file path that will be evaluated.
