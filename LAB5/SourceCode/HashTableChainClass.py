@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 18, 2019
+# Date of Last Modification: October 31, 2019
 # Assignment: Lab 5 - Hash Tables
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -15,7 +15,7 @@
 #          index referenced. Lastly, the hash tables are populated 
 #          based on the user's selection of a hash function which are the 
 #          following: (1) string length (2) ascii value of the first character
-#          (3) ascii value of the first and last character (4) ascii sum
+#          (3) ascii product of the first and last character (4) ascii sum
 #          (5) recursive Horner's method (6) custom.
 
 # Provided by the instructor.
@@ -155,12 +155,13 @@ class HashTableChain(object):
         # insertion had the fastest running times.
         if hash_func_num >= 5 or not use_order:
             self.insert_linear(word_embedding, hash_func_num)
-            return
-        chain = self.h(word_embedding.word, hash_func_num)
-        
-        # Inserts the WordEmbedding object if use_order is not true or the
-        # hash function number is less than 5.
-        self.binary_insertion(self.bucket[chain], word_embedding, 0, len(self.bucket[chain]) - 1)
+        else:
+            chain = self.h(word_embedding.word, hash_func_num)
+            
+            # Inserts the WordEmbedding object if use_order is not true or the
+            # hash function number is less than 5.
+            self.binary_insertion(self.bucket[chain], word_embedding, 0, 
+                                  len(self.bucket[chain]) - 1)
     
     # Inserts a WordEmbedding object by using the specified hashing function
     # linearly.

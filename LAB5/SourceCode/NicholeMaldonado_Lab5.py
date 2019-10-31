@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 18, 2019
+# Date of Last Modification: October 31, 2019
 # Assignment: Lab 5 - Hash Tables
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -10,7 +10,7 @@
 #          of words per line, seperated by commas or a user enters their own
 #          word pair.  The similarity of these words are then calculated by 
 #          the cosine distance between them. The similarities are displayed as 
-#          well as the running times for the consturction of the tree and the 
+#          well as the running times for the construction of the tree and the 
 #          similarity calculations.  Lastly, the hash tables are populated 
 #          based on the user's selection of a hash function which are the 
 #          following: (1) string length (2) ascii value of the first character
@@ -67,8 +67,8 @@ def print_index_usage(index_usage_hash_table):
         print()
 
 # Reads a file of word pairs and searches for the corresponding WordEmbedding
-# objects in the hash table. Also intiates the calculation of the words' 
-# similarities.
+# objects in the hash table with linear probing. Also intiates the calculation 
+# of the words'similarities.
 # Input: The hash table with linear probing that contains WordEmbedding
 #       objects and the file path containing the word pairs. The
 #       function_num is also included which specifies the hash function
@@ -139,9 +139,9 @@ def find_similarities_file_lp(hash_table, file_path_pairs, function_num):
     return end_time - start_time
 
 # Reads a file of word pairs and searches for the corresponding WordEmbedding
-# objects in the hash table. Also intiates the calculation of the words' 
-# similarities.
-# Input: The hash table with chaining containing that contains WordEmbedding
+# objects in the hash table with chaining. Also intiates the calculation of the 
+# words' similarities.
+# Input: The hash table with chaining that contains WordEmbedding
 #        objects and the file path containing the word pairs. The
 #       function_num is also included which specifies the hash function
 #       to be used. use_order is a boolean that is True if the
@@ -178,11 +178,11 @@ def find_similarities_file_chaining(hash_table, file_path_pairs, function_num, u
             
             # Only evaluates lines with a word at the first index.
             if len(line) == 2 and line[0].isalpha() and line[1].isalpha():
-                
+
                 # Finds the embeddings in the hash table.
                 embedding1 = hash_table.find(line[0].lower(), function_num, index_usage, use_order)
                 embedding2 = hash_table.find(line[1].lower(), function_num, index_usage, use_order)
-
+                
                 # Computes and adds the similarity to the word_pairs
                 # as long as each embedding was successfully found in the list.
                 if not embedding1 is None and not embedding2 is None:
@@ -215,7 +215,7 @@ def find_similarities_file_chaining(hash_table, file_path_pairs, function_num, u
 # Valid words consist of letters only.
 # Input: None
 # Output: The number of lines with valid words that the file to be read will
-#        contain or -1 if the user entered an invalid menu number or line
+#        contain or -1 if the user entered an invalid menu number or
 #        line number.  The -1 signifies that the number of lines will be
 #        calculated by the computer.
 def determine_num_lines():
@@ -324,7 +324,7 @@ def find_similarity_chaining(hash_table, pair, function_num, use_order):
     
     return end_time - start_time
 
-# Allows the user to select whether they want elements for Hash Tables with a
+# Allows the user to select whether they want elements for hash tables with a
 # chain to be appended or inserted in an ordered position.
 # Input: None
 # Output: Returns True if the user want the elements to be inserted in an
@@ -334,6 +334,8 @@ def search_type(function_num):
     print("1. Binary Insertion and Binary Search")
     print("2. Linear Insertion and Linear Search")
     search_num = int(input("Select 1 or 2: "))
+    print()
+    
     if search_num == 1:
         use_order = True
     elif search_num == 2:
@@ -347,12 +349,12 @@ def search_type(function_num):
 # Reads a file with word embeddings and populates a hash table with chaining
 # with the corresponding WordEmbedding objects.
 # Input: The file path where the word embeddings are located, the hash function
-#        and the table_size factor selected by the user.
+#        and the load_factorfactor selected by the user.
 # Output: The hash table with linear probing created and the running time for 
 #         the table's consturction.
 # Assume the function_num is an integer from 1 to 6. The function_num
 # corresponds to the hashing function listed in the header.
-def file_to_chaining(file_path_words, function_num, table_size):
+def file_to_chaining(file_path_words, function_num, load_factor):
     
     # Determines wether linear insertion or binary insertion will be performed.
     if function_num >= 1 and function_num <= 4:
@@ -416,7 +418,7 @@ def file_to_chaining(file_path_words, function_num, table_size):
 # Reads a file with word embeddings and populates a hash table with linear 
 # probing with the corresponding WordEmbedding objects.
 # Input: The file path where the word embeddings are located, the hash function
-#        number, and the table_size factor selected by the user.
+#        number, and the load_factor selected by the user.
 # Output: The hash table created and the running time for the table's 
 #         consturction.
 # Assume the function_num is an integer from 1 to 6. The function_num
@@ -481,7 +483,7 @@ def file_to_linear_probing(file_path_words, function_num, load_factor):
 
 # Initiates the creation of a hash table with chaining and prints the stats of 
 # the table.
-# Input: The file path where the word embeddings are locatedm the hashing 
+# Input: The file path where the word embeddings are located, the hashing 
 #        function number, and the load factor.
 # Output: The hash table with chaining stats are displayed and the built table 
 #         is returned.
