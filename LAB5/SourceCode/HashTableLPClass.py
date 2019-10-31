@@ -72,10 +72,10 @@ class HashTableLP(object):
     #        word should reside by 1.
     # Output: If the WordEmbedding was found, then the emb attribute is
     #         returned.  Otherwise, None is returned.
-    def find(self,word_embedding, function_num, index_usage_hash_table):
+    def find(self,word, function_num, index_usage_hash_table):
         
         # Finds the bucket where the word should reside.
-        initial_bucket = self.h(word_embedding, function_num)
+        initial_bucket = self.h(word, function_num)
         
         # Increments the index's reference in the hash table by 1.
         if index_usage_hash_table.item[initial_bucket] < 0:
@@ -93,7 +93,7 @@ class HashTableLP(object):
             
             # Returns the emb attribute if the word is found.
             try:
-                if self.item[pos].word == word_embedding:
+                if self.item[pos].word == word:
                     return self.item[pos].emb
             
             # Stops the search if a -1 is found.
@@ -151,18 +151,12 @@ class HashTableLP(object):
     def hash_function_custom(self, word):
         if len(word) == 0:
             return 0
+        
         summation = ord(word[0])
         for i in range(1, len(word)):
-            temp = bin(((133 ** i) * ord(word[i])) ^ (37**i))
-#            temp = bin(((133 ** i) * ord(word[i]) + i) ^ ((119 ** i) * (summation//3)))
-#            temp = bin(((133 ** i) * ord(word[i]) + i) ^ (((119 ** i) ^ i) * (summation//3)))
-#            temp = bin(((133 ** i) * ord(word[i]) + i) ^ (((119 ** i) >> 2) ^ i) * (summation//3))
-            temp = int(temp, 2)
-            summation += temp
-#            summation += ((133 ** i) * ord(word[i]) + i**i)
-            
-#            coefficient = (67 * coefficient) + ord(word[i])
-#            coefficient += ord(word[i]) * 67
+            binary_val = bin(((133 ** i) * ord(word[i])) ^ (37**i))
+            binary_val = int(binary_val, 2)
+            summation += binary_val
         return summation % len(self.item)
     
     # Hashing function that determines which hashing function to use based on

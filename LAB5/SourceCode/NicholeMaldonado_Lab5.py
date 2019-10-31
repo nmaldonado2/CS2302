@@ -69,14 +69,14 @@ def print_index_usage(index_usage_hash_table):
 # Reads a file of word pairs and searches for the corresponding WordEmbedding
 # objects in the hash table. Also intiates the calculation of the words' 
 # similarities.
-# Input: The hash table with linear probing or chaining containing
-#        WordEmbedding objects and the file path containing the word pairs. The
+# Input: The hash table with linear probing that contains WordEmbedding
+#       objects and the file path containing the word pairs. The
 #       function_num is also included which specifies the hash function
 #       to be used.
 # Output: The running time for finding the similairites of all the pairs.
 # Assume the function_num is an integer from 1 to 6. The function_num
 # corresponds to the hashing function listed in the header.
-def find_similarities_file(hash_table, file_path_pairs, function_num):    
+def find_similarities_file_lp(hash_table, file_path_pairs, function_num):    
     
     # Reads the file containing the word pairs.
     print("Reading word file to determine similarities\n")
@@ -127,7 +127,6 @@ def find_similarities_file(hash_table, file_path_pairs, function_num):
                 non_analyzed_pairs.append(line)
         line = pairs_file.readline()
     end_time = time.perf_counter()
-    
     pairs_file.close()
     
     # Prints the pairs that were not analyzed.
@@ -139,8 +138,109 @@ def find_similarities_file(hash_table, file_path_pairs, function_num):
     print_index_usage(index_usage)
     return end_time - start_time
 
+# Reads a file of word pairs and searches for the corresponding WordEmbedding
+# objects in the hash table. Also intiates the calculation of the words' 
+# similarities.
+# Input: The hash table with chaining containing that contains WordEmbedding
+#        objects and the file path containing the word pairs. The
+#       function_num is also included which specifies the hash function
+#       to be used. use_order is a boolean that is True if the
+#       current hash table has ordered chains or false otherwise.
+# Output: The running time for finding the similairites of all the pairs.
+# Assume the function_num is an integer from 1 to 6. The function_num
+# corresponds to the hashing function listed in the header.
+def find_similarities_file_chaining(hash_table, file_path_pairs, function_num, use_order):    
+    
+    # Reads the file containing the word pairs.
+    print("Reading word file to determine similarities\n")
+    pairs_file = open(file_path_pairs, "r")
+    line = pairs_file.readline()
+    
+    word_pairs = []
+    
+    # Will be populated if a word embedding could not be found or a line was
+    # not formatted properly.
+    non_analyzed_pairs = []
+    
+    # Initializes a hash table that will keep track of the number of times
+    # the indices are referenced.
+    try:
+        index_usage = htlp.HashTableLP(len(hash_table.item))
+    except:
+        index_usage = htlp.HashTableLP(len(hash_table.bucket))
+    
+    # Reads each line and finds the corresponding embeddings in the hash table.
+    # The similarity between the words is then computed and added to a list.
+    start_time = time.perf_counter()
+    while line:
+        if not line.isspace():
+            line = line.rstrip("\n").rstrip(" ").split(",")
+            
+            # Only evaluates lines with a word at the first index.
+            if len(line) == 2 and line[0].isalpha() and line[1].isalpha():
+                
+                # Finds the embeddings in the hash table.
+                embedding1 = hash_table.find(line[0].lower(), function_num, index_usage, use_order)
+                embedding2 = hash_table.find(line[1].lower(), function_num, index_usage, use_order)
+
+                # Computes and adds the similarity to the word_pairs
+                # as long as each embedding was successfully found in the list.
+                if not embedding1 is None and not embedding2 is None:
+                    word_pairs.append([line[0].lower(), line[1].lower(), 
+                                       compute_similarity(embedding1, embedding2)])
+                
+                # If the embedding was not found, it is added to
+                # non_analyzed_pairs.
+                else:
+                    non_analyzed_pairs.append(line)
+                    
+            # If the line does not have the proper format, it is added to
+            # non_analyzed_pairs.
+            else:
+                non_analyzed_pairs.append(line)
+        line = pairs_file.readline()
+    end_time = time.perf_counter()
+    pairs_file.close()
+    
+    # Prints the pairs that were not analyzed.
+    if len(non_analyzed_pairs) > 0:
+        print_non_analyzed_pairs(non_analyzed_pairs)
+    
+    # Initiates the printing of the word_pairs and most referenced index.
+    print_similarities(word_pairs)
+    print_index_usage(index_usage)
+    return end_time - start_time
+
+# Determines the number of valid words that a file to be read will contain. 
+# Valid words consist of letters only.
+# Input: None
+# Output: The number of lines with valid words that the file to be read will
+#        contain or -1 if the user entered an invalid menu number or line
+#        line number.  The -1 signifies that the number of lines will be
+#        calculated by the computer.
+def determine_num_lines():
+    print("1. Enter the number of valid, words with letters only that the file contains.")
+    print("2. Automatically calculate words")
+    menu = int(input("Select 1 or 2: "))
+    print()
+    
+    if menu == 1:
+        num_lines = int(input("Enter the number of words: "))
+        print()
+        if num_lines < 0:
+            print("Invalid number of words.  The file's number of ", end = "")
+            print("words will automatically be calculated\n")
+            return False
+        return num_lines
+    
+    if menu != 1 and menu != 2:
+        print("Invalid menu selection. The file's number of words will", end = "")
+        print(" automatically be calculated.")
+
+    return -1
+
 # Receives a pair of words and searches for the corresponding WordEmbedding
-# objects in the hash table with linear probing or chaining. Also intiates the 
+# objects in the hash table with linear probing. Also intiates the 
 # calculation of the words' similarity.
 # Input: A hash table containing WordEmbedding objects and a list containing
 #        two words. The function_num is also included and denotes the hash
@@ -150,7 +250,7 @@ def find_similarities_file(hash_table, file_path_pairs, function_num):
 # Also assume the words only contain lower-case letters.
 # Assume the function_num is an integer from 1 to 6. The function_num
 # corresponds to the hashing function listed in the header.
-def find_similarity(hash_table, pair, function_num):
+def find_similarity_lp(hash_table, pair, function_num):
     
     # Initializes a hash table that will keep track of the number of times
     # the indices are referenced.
@@ -181,6 +281,69 @@ def find_similarity(hash_table, pair, function_num):
     
     return end_time - start_time
 
+# Receives a pair of words and searches for the corresponding WordEmbedding
+# objects in the hash table with chaining. Also intiates the 
+# calculation of the words' similarity.
+# Input: A hash table containing WordEmbedding objects and a list containing
+#        two words. The function_num is also included and denotes the hash
+#        function to be used. use_order is a boolean that is True if the
+#        current hash table has ordered chains or false otherwise.
+# Output: The running time for finding the similairites of the pair.
+# Assume pair is a list with only two words, one at index 0 and one at index 1.
+# Also assume the words only contain lower-case letters.
+# Assume the function_num is an integer from 1 to 6. The function_num
+# corresponds to the hashing function listed in the header.
+def find_similarity_chaining(hash_table, pair, function_num, use_order):
+    
+    # Initializes a hash table that will keep track of the number of times
+    # the indices are referenced.
+    try:
+        index_usage = htlp.HashTableLP(len(hash_table.item))
+    except:
+        index_usage = htlp.HashTableLP(len(hash_table.bucket))
+    
+    start_time = time.perf_counter()
+    
+    # Finds the embeddings in the hash table.
+    embedding1 = hash_table.find(pair[0], function_num, index_usage, use_order)
+    embedding2 = hash_table.find(pair[1], function_num, index_usage, use_order)
+                
+    # Computes and adds the similarity to the word_pairs
+    # as long as each embedding was successfully found in the list.
+    if not embedding1 is None and not embedding2 is None:
+        similarity = compute_similarity(embedding1, embedding2)
+        end_time = time.perf_counter()
+        
+        # Initiates the printing of the results and the most referenced index.
+        print_similarities([[pair[0], pair[1], similarity]])
+        print_index_usage(index_usage)
+    else:
+        end_time = time.perf_counter()
+        print("The pair's similiarity was not found since one or", end = " ")
+        print("more words could not be found.")
+    
+    return end_time - start_time
+
+# Allows the user to select whether they want elements for Hash Tables with a
+# chain to be appended or inserted in an ordered position.
+# Input: None
+# Output: Returns True if the user want the elements to be inserted in an
+#         ordered position or false otherwise.
+def search_type(function_num):
+    print("Choose the insertion and find method that you would like to use.")
+    print("1. Binary Insertion and Binary Search")
+    print("2. Linear Insertion and Linear Search")
+    search_num = int(input("Select 1 or 2: "))
+    if search_num == 1:
+        use_order = True
+    elif search_num == 2:
+        use_order = False
+    else:
+        print("Invalid selection the binary insertion will be used instead")
+        use_order = True
+    
+    return use_order
+
 # Reads a file with word embeddings and populates a hash table with chaining
 # with the corresponding WordEmbedding objects.
 # Input: The file path where the word embeddings are located, the hash function
@@ -191,32 +354,49 @@ def find_similarity(hash_table, pair, function_num):
 # corresponds to the hashing function listed in the header.
 def file_to_chaining(file_path_words, function_num, table_size):
     
+    # Determines wether linear insertion or binary insertion will be performed.
+    if function_num >= 1 and function_num <= 4:
+        use_order = search_type(function_num)
+    else:
+        use_order = False
+        
+    # Determines the number of valid lines the file has.    
+    num_lines = determine_num_lines()
+    
     # Opens the file to read.
     word_file = open(file_path_words, "r")
     line = word_file.readline()
-    
-    # Counts the number of lines to set the hash table's size.
-    num_lines = 0
-    while line:
-        num_lines += 1
+
+    # If the number of valid lines are unknown, they are calculated.
+    if num_lines == -1:
+        print("Computing table size")
+        num_lines = 0
+        while line:
+            if not line.isspace():
+                line = line.rstrip("\n").split(" ")
+                if len(line) > 0 and line[0].isalpha():
+                    num_lines += 1
+            line = word_file.readline()
+        word_file.seek(0)
         line = word_file.readline()
+        print("Action complete\n")
     
-#    # Testing demonstrated that to have a lod function of .75 with the currrent
-#    # files a factor of 0.1 needed to be applied.
-#    if table_size == 1:
-#        table_size += 0.1
+    # Calculates the table size.
+    table_size = int(num_lines / load_factor) + 1
+    
+    print("Building Hash Table with Chaining\n")
     
     # Creates the hash table with chaining.
-    hash_table = htc.HashTableChain(int(num_lines * table_size + 1))
-    
-    # Re-starts the file reading.
-    word_file.seek(0)
-    line = word_file.readline()
+    hash_table = htc.HashTableChain(table_size)
+
+    # Used as a safeguard in the event that the user inputted the wrong
+    # number of lines. The program will only read the number of lines designated.
+    lines_read = 0
     
     # For each file line read, a WordEmbedding object is created and inserted
     # into the hash table.
     start_time = time.perf_counter()
-    while line:
+    while line and lines_read <= num_lines:
         if not line.isspace():
             line = line.rstrip("\n").split(" ")
             
@@ -224,14 +404,14 @@ def file_to_chaining(file_path_words, function_num, table_size):
             # index of the line.
             if len(line) > 0 and line[0].isalpha():
                 word_embedding = wemb.WordEmbedding(line[0], line[1:])
-                hash_table.insert(word_embedding, function_num)
+                lines_read += 1
+                hash_table.insert(word_embedding, function_num, use_order)
         line = word_file.readline()
     end_time = time.perf_counter()
     
     word_file.close()
     
-    return hash_table, (end_time - start_time) 
-    
+    return hash_table, (end_time - start_time), use_order
     
 # Reads a file with word embeddings and populates a hash table with linear 
 # probing with the corresponding WordEmbedding objects.
@@ -241,32 +421,44 @@ def file_to_chaining(file_path_words, function_num, table_size):
 #         consturction.
 # Assume the function_num is an integer from 1 to 6. The function_num
 # corresponds to the hashing function listed in the header.
-def file_to_linear_probing(file_path_words, function_num, table_size):
-
+def file_to_linear_probing(file_path_words, function_num, load_factor):
+    
+    # Determines the number of valid lines the file has.   
+    num_lines = determine_num_lines()
+    
     # Opens the file to read.
     word_file = open(file_path_words, "r")
     line = word_file.readline()
     
-    num_lines = 0
-    while line:
-        num_lines += 1
+    # If the number of valid lines are unknown, they are calculated.
+    if num_lines == -1:
+        print("Computing table size")
+        num_lines = 0
+        while line:
+            if not line.isspace():
+                line = line.rstrip("\n").split(" ")
+                if len(line) > 0 and line[0].isalpha():
+                    num_lines += 1
+            line = word_file.readline()
+        word_file.seek(0)
         line = word_file.readline()
+        print("Action complete\n")
     
-    if table_size == 1.1 and num_lines == 10000:
-        table_size += 0.15
-    if table_size == 0.9 and num_lines == 10000:
-        table_size += 0.13
+    # Calculates the table size.
+    table_size = int(num_lines / load_factor) + 1
+    print("Building Hash Table with Linear Probing\n")
     
     # Counts the number of lines to set the hash table's size
-    hash_table = htlp.HashTableLP(int(num_lines * table_size + 1))
+    hash_table = htlp.HashTableLP(table_size)
     
-    word_file.seek(0)
-    line = word_file.readline()
+    # Used as a safeguard in the event that the user inputted the wrong
+    # number of lines. The program will only read the number of lines designated.
+    lines_read = 0
     
     # For each file line read, a WordEmbedding object is created and inserted
     # into the hash table.
     start_time = time.perf_counter()
-    while line:
+    while line and lines_read <= num_lines:
         if not line.isspace():
             line = line.rstrip("\n").split(" ")
             
@@ -274,26 +466,29 @@ def file_to_linear_probing(file_path_words, function_num, table_size):
             # index of the line.
             if len(line) > 0 and line[0].isalpha():
                 word_embedding = wemb.WordEmbedding(line[0], line[1:])
+                lines_read += 1
                 hash_table.insert(word_embedding, function_num)
         line = word_file.readline()
     end_time = time.perf_counter()
     
+    
+    if word_file.readline() != "":
+        print("One or more word embeddings were not added to your table", end = "")
+        print(" since the number of words exceeded the designate load factor.\n")
     word_file.close()
     
     return hash_table, (end_time - start_time) 
-    
 
 # Initiates the creation of a hash table with chaining and prints the stats of 
 # the table.
 # Input: The file path where the word embeddings are locatedm the hashing 
-#        function number, and the table_size factor.
+#        function number, and the load factor.
 # Output: The hash table with chaining stats are displayed and the built table 
 #         is returned.
-def chaining_setup(file_path_words, function_num, table_size):
-    print("Building the Hash Table with Chaining\n")
+def chaining_setup(file_path_words, function_num, load_factor):
     
     # Intiates hash table construction.
-    hash_table, runtime = file_to_chaining(file_path_words, function_num, table_size)
+    hash_table, runtime, use_order = file_to_chaining(file_path_words, function_num, load_factor)
     
     # Prints the hash table stats.
     print("Hash Table with Chaining stats:\n")
@@ -303,19 +498,18 @@ def chaining_setup(file_path_words, function_num, table_size):
     print("Load Factor: %.4f\n" % (num_elements / len(hash_table.bucket)))
     print("Running time for hash table with chaining construction: %.4f seconds\n" % runtime)
 
-    return hash_table
+    return hash_table, use_order
 
 # Initiates the creation of a hash table with linear probing and prints the 
 # stats of the table.
 # Input: The file path where the word embeddings are located, the hash function
-#        number, and the table_size factor.
+#        number, and the load factor.
 # Output: The hash table with linear probing stats are displayed and the  
 #         populated table is returned.
-def linear_probing_setup(file_path_words, function_num, table_size):
-    print("Building Hash Table with Linear Probing\n")
-    
+def linear_probing_setup(file_path_words, function_num, load_factor):
+
     # Intiates hash table construction.
-    hash_table, runtime = file_to_linear_probing(file_path_words, function_num, table_size)
+    hash_table, runtime = file_to_linear_probing(file_path_words, function_num, load_factor)
     
     # Prints the hash table stats.
     print("Hash Table with Linear Probing stats:\n")
@@ -331,24 +525,23 @@ def linear_probing_setup(file_path_words, function_num, table_size):
 # the similarities between pairs of words.
 # Input: The file path where the word embeddings are located and a list with
 #        the file path for the word pairs or a pair of words. The hashing
-#        function number and the table size factor, which will be used to 
-#        adjust the load factor, are also parameters.
+#        function number and the load factor are also parameters.
 # Output: None, other than the running time for the query processing is
 #         displayed.    
 # Assume pair_path_or_input will be a list of length one or 2.  If the list
 # has a length of 1, then it will only contain the path for the file
 # with word pairs.  If the length is two, then at each index a word is located.
 # The two words create the pair to be evaluated.
-def chaining_analysis(file_path_words, pair_path_or_input, function_num, table_size):
+def chaining_analysis(file_path_words, pair_path_or_input, function_num, load_factor):
 
     # Initiates the hash table's construction.
-    hash_table = chaining_setup(file_path_words, function_num, table_size)
+    hash_table, use_order = chaining_setup(file_path_words, function_num, load_factor)
     
     # Intiates the similarity analysis.
     if len(pair_path_or_input) == 1:
-        perf_time = find_similarities_file(hash_table, pair_path_or_input[0], function_num)
+        perf_time = find_similarities_file_chaining(hash_table, pair_path_or_input[0], function_num, use_order)
     else:
-        perf_time = find_similarity(hash_table, pair_path_or_input, function_num)
+        perf_time = find_similarity_chaining(hash_table, pair_path_or_input, function_num, use_order)
 
     print("Running time for hash table with chaining query ", end = "")
     print(" processing: %.4f seconds" % perf_time)
@@ -357,24 +550,23 @@ def chaining_analysis(file_path_words, pair_path_or_input, function_num, table_s
 # computation of the similarities between pairs of words.
 # Input: The file path where the word embeddings are located and a list with
 #        the file path for the word pairs or a pair of words.  The hashing
-#        function number and the table size factor, which will be used to 
-#        adjust the load factor, are also parameters.
+#        function number and the load factor are also parameters.
 # Output: None, other than the running time for the query processing is
 #         displayed.    
 # Assume pair_path_or_input will be a list of length one or 2.  If the list
 # has a length of 1, then it will only contain the path for the file
 # with word pairs.  If the length is two, then at each index a word is located.
 # The two words create the pair to be evaluated.
-def linear_probing_analysis(file_path_words, pair_path_or_input, function_num, table_size):
+def linear_probing_analysis(file_path_words, pair_path_or_input, function_num, load_factor):
     
     # Intiates the hash table's construction.
-    hash_table = linear_probing_setup(file_path_words, function_num, table_size)
+    hash_table = linear_probing_setup(file_path_words, function_num, load_factor)
     
     # Intiates the similarity analysis.
     if len(pair_path_or_input) == 1:
-        perf_time = find_similarities_file(hash_table, pair_path_or_input[0], function_num)
+        perf_time = find_similarities_file_lp(hash_table, pair_path_or_input[0], function_num)
     else:
-        perf_time = find_similarity(hash_table, pair_path_or_input, function_num)
+        perf_time = find_similarity_lp(hash_table, pair_path_or_input, function_num)
 
     print("Running time for hash table with linear probing query ", end = "")
     print(" processing: %.4f seconds" % perf_time)
@@ -460,10 +652,7 @@ def pairs_from_file_or_input():
 # Input: None
 # Output None
 try:
-#    valid_input, file_path_words, pair_path_or_input = pairs_from_file_or_input()
-    valid_input = True
-    file_path_words = "/Users/nichole_maldonado/Desktop/glove.6B.50d.txt"
-    pair_path_or_input = ["/Users/nichole_maldonado/Desktop/Lab4/Trial1_100.txt"]
+    valid_input, file_path_words, pair_path_or_input = pairs_from_file_or_input()
     
     # If file paths are .txt files or the pairs only contain two words, then
     # the hash table is built and the pairs similarites are calculated.
@@ -492,36 +681,41 @@ try:
             # used to adjust the load factor.
             if function_num >= 1 and function_num <= 6:
                 print("Chose the size of the hash table")
-                print("1. Load Factor of Approximately 0.75")
-                print("2. Load Factor of Apprxoimately 0.5")
-                print("3. Load Factor of Approximately 0.27")
-                print("4. Load Factor of Approximately 0.9")
-                table_size = int(input("Select 1, 2, or 3: "))
+                print("1. Load Factor of Approximately 0.9")
+                print("2. Load Factor of Approximately 0.75")
+                print("3. Load Factor of Approximately 0.5")
+                print("4. Load Factor of Approximately 0.27")
+                
+                load_factor = int(input("Select 1 - 4: "))
+                print()
         
                 # If the user correctly selected all of the above options,
                 # then the main table construction and find occurs.
-                if table_size >= 1 and table_size <= 4:
-                    if table_size == 1:
-                        table_size = 1.1
-                    elif table_size == 2:
-                        table_size = 2
-                    elif table_size == 3:
-                        table_size = 3
-                    else:
-                        table_size = 0.9
+                if load_factor >= 1 and load_factor <= 4:
+                    
+                    # Assigns the load_factor determined by the user.
+                    if load_factor == 1:
+                        load_factor = 0.9
+                    elif load_factor == 2:
+                        load_factor = .75
                         
+                    elif load_factor == 3:
+                        load_factor = .5
+                    else:
+                        load_factor = .27
+                    
                     
                     # If the users chooses one, then the hash table with 
                     # chaining is built and evaluated.
                     if menu == 1:
                         chaining_analysis(file_path_words, pair_path_or_input, 
-                                          function_num, table_size)
+                                          function_num, load_factor)
                         
                     # If the users chooses two, then the hash table with 
                     # linear probing is built and evaluated.
                     else:
                         linear_probing_analysis(file_path_words, pair_path_or_input, 
-                                                function_num, table_size)
+                                                function_num, load_factor)
                 
                 # Otherwise the program terminates.
                 else:

@@ -82,14 +82,9 @@ class HashTableChain(object):
             return 0
         summation = ord(word[0])
         for i in range(1, len(word)):
-#            temp = bin(((133 ** i) * ord(word[i]) + i) ^ (((119 ** i) ^ i) * (summation//3)))
-            temp = bin(((133 ** i) * ord(word[i])) ^ (37**i))
-            temp = int(temp, 2)
-            summation += temp
-#            summation += ((133 ** i) * ord(word[i]) + i**i)
-            
-#            coefficient = (67 * coefficient) + ord(word[i])
-#            coefficient += ord(word[i]) * 67
+            binary_val = bin(((133 ** i) * ord(word[i])) ^ (37**i))
+            binary_val = int(binary_val, 2)
+            summation += binary_val
         return summation % len(self.bucket)
     
     # Hashing function that determines which hashing function to use based on
@@ -151,12 +146,64 @@ class HashTableChain(object):
     # Inserts a WordEmbedding object by using the specified hashing function.
     # Input: The WordEmbedding object to be inserted and the hashing
     #        function number which will denote which hashing function to use.
+    #        If use_order is true, then the WordEmbedding object will be
+    #        inserted in order.  Otherwise, a linear insertion is used.
     # Output: None
-    def insert(self, word_embedding, hash_func_num):
+    def insert(self, word_embedding, hash_func_num, use_order):
+        
+        # Testing demonstrated that for hash functions 5 and 6, the linear
+        # insertion had the fastest running times.
+        if hash_func_num >= 5 or not use_order:
+            self.insert_linear(word_embedding, hash_func_num)
+            return
+        chain = self.h(word_embedding.word, hash_func_num)
+        
+        # Inserts the WordEmbedding object if use_order is not true or the
+        # hash function number is less than 5.
+        self.binary_insertion(self.bucket[chain], word_embedding, 0, len(self.bucket[chain]) - 1)
+    
+    # Inserts a WordEmbedding object by using the specified hashing function
+    # linearly.
+    # Input: The WordEmbedding object to be inserted and the hashing
+    #        function number which will denote which hashing function to use.
+    # Output: None
+    def insert_linear(self, word_embedding, hash_func_num):
+        
+        # Finds the chain where the word should reside.
         b = self.h(word_embedding.word, hash_func_num)
         
-        # Inserts the WordEmbedding object.
-        self.binary_insertion(self.bucket[b], word_embedding, 0, len(self.bucket[b]) - 1)
+        # Searches for the word iteratively.  If the word is found, it is
+        # not inserted.  Otherwise, the word embeding will be inserted
+        # at the end of the list.
+        for item in self.bucket[b]:
+            if item.word == word_embedding.word:
+                return
+        self.bucket[b].append(word_embedding)
+        
+    # Returns WordEmbedding object's emb attribute if the word_embedding is
+    # found in the hash table.
+    # Input: The word to be searched for, the hashing function number, and 
+    #        an index_usage_hash table which will update the index where the
+    #        word should reside by 1.
+    # Output: If the WordEmbedding was found, then the emb attribute is
+    #         returned.  Otherwise, None is returned.
+    def find_linear(self,word, function_num, index_usage_hash_table):
+        
+        # Finds the bucket where the word should reside.
+        chain = self.h(word, function_num)
+        
+        # Increments the index's reference in the hash table by 1.
+        if index_usage_hash_table.item[chain] < 0:
+            index_usage_hash_table.item[chain]  = 1
+        else:
+            index_usage_hash_table.item[chain] += 1
+        
+        # Searches for the word in the designated bucket and returns
+        # the emb attribute if found.
+        for item in self.bucket[chain]:
+            if item.word == word:
+                return item.emb
+        return None
     
     # Finds the index of the word location in the designated hash table's chain.
     # Input: The chain of the bucket where the word should reside and the
@@ -189,24 +236,27 @@ class HashTableChain(object):
     #        word should reside by 1.
     # Output: If the WordEmbedding was found, then the emb attribute is
     #         returned.  Otherwise, None is returned.
-    def find(self,k, function_num, index_usage_hash_table):
+    def find(self, word, function_num, index_usage_hash_table, use_order):       
+        if function_num >= 5 or not use_order:
+            return self.find_linear(word, function_num, index_usage_hash_table)
+            
         
         # Finds the bucket where the word should reside.
-        b = self.h(k, function_num)
+        chain = self.h(word, function_num)
         
         # Increments the index's reference in the hash table by 1.
-        if index_usage_hash_table.item[b] < 0:
-            index_usage_hash_table.item[b]  = 1
+        if index_usage_hash_table.item[chain] < 0:
+            index_usage_hash_table.item[chain]  = 1
         else:
-            index_usage_hash_table.item[b] += 1
+            index_usage_hash_table.item[chain] += 1
         
         # Performs binary search to find the word.
-        i = self.find_binary_search(self.bucket[b], k, 0, len(self.bucket[b]) - 1)
+        i = self.find_binary_search(self.bucket[chain], word, 0, len(self.bucket[chain]) - 1)
         
         # If the word found, then the emb attribute of the WordEmbedding object
         # is returned.
         if i != -1:
-            return self.bucket[b][i].emb
+            return self.bucket[chain][i].emb
         return None
     
     # Caluclates the number of WordEmbedding objects in the hash table.
