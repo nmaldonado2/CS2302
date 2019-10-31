@@ -10,7 +10,7 @@
 #          of words per line, seperated by commas or a user enters their own
 #          word pair.  The similarity of these words are then calculated by 
 #          the cosine distance between them. The similarities are displayed as 
-#          well as the running times for the construction of the tree and the 
+#          well as the running times for the construction of the table and the 
 #          similarity calculations.  Lastly, the hash tables are populated 
 #          based on the user's selection of a hash function which are the 
 #          following: (1) string length (2) ascii value of the first character
@@ -411,6 +411,9 @@ def file_to_chaining(file_path_words, function_num, load_factor):
         line = word_file.readline()
     end_time = time.perf_counter()
     
+    if word_file.readline() != "":
+        print("One or more word embeddings were not added to your table", end = "")
+        print(" since the number of words exceeded the designate load factor.\n")
     word_file.close()
     
     return hash_table, (end_time - start_time), use_order
