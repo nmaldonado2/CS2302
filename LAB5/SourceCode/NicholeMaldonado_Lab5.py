@@ -413,7 +413,7 @@ def file_to_chaining(file_path_words, function_num, load_factor):
     
     if word_file.readline() != "":
         print("One or more word embeddings were not added to your table", end = "")
-        print(" since the number of words exceeded the designate load factor.\n")
+        print(" since the number of words exceeded the designated load factor.\n")
     word_file.close()
     
     return hash_table, (end_time - start_time), use_order

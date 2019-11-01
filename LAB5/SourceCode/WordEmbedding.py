@@ -1,15 +1,18 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 12, 2019
-# Assignment: Lab 4 - Binary Search Trees and B-Trees
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 5 - Hash Tables
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
 # Purpose: The purpose of this lab was to read a file containing word embeddings
-#          and populate a Binary Search Tree (BST) or B-Tree with 
-#          WordEmbedding objects.  The similarities of the word 
-#          embedding pairs from a given file are then computed.  The following 
-#          file contains the WordEmbedding calss. The embedding attribute
-#          must be a list or array of length 50 for this lab.
+#          and populate a Hash Table with Chaining or Linear Probing with 
+#          WordEmbedding objects.  A second file is then read with a pair
+#          of words per line, seperated by commas or a user enters their own
+#          word pair.  The similarity of these words are then calculated by 
+#          the cosine distance between them. The similarities are displayed as 
+#          well as the running times for the construction of the table and the 
+#          similarity calculations. This file contains the WordEmbedding class
+#          whose objects will be used to populate the hash tables.
 
 import numpy as np
 
