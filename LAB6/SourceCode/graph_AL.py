@@ -1,7 +1,20 @@
-# Adjacency list representation of graphs
+# Course: CS2302 Data Structures
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 6 - Graphs
+# Author: Nichole Maldonado
+# Professor: Olac Fuentes
+# TA: Anindita Nath
+# Purpose: The purpose of this lab ws to represent graphs through adjacency
+#          lists, adjacency matrices, and edge lists. These grahical
+#          representations were then used to solve the riddle concerning a fox,
+#          chicken, sack of grain, and person by using breadth first search and
+#          depth first search.  This file provides the class for the adjacency
+#          list. Functions included with the graph are insert edge, delete edge,
+#          draw, display, breadth first search, depth first search, draw path,
+#          and convert to other graphical representations.
+
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 import graph_AM as am
 import graph_EL as el
 from scipy.interpolate import interp1d
@@ -130,6 +143,7 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        print("Please completely close the graph when done to continue the program.")
         plt.show(block = True)
     
     # Function that draws the edge list and highlights a path, from set_of_edges
@@ -182,6 +196,7 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        print("Please completely close the graph when done to continue the program.")
         plt.show(block = True)
     
     # Converts the current adjacency list into an edge list.
@@ -215,171 +230,6 @@ class Graph:
     # Output: Returns the current instance of the adjacnecy list.
     def as_AL(self):
         return self
-#    def breadth_first_search(self, v):
-#        if v >= len(self.al) or v < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        discovered_elements = []
-#        
-#        frontier_queue.append(self.al[v])
-#        discovered_elements.append(v)
-#        prev = [[-1] for i in range(len(self.al))]
-#        
-#        while len(frontier_queue) > 0:
-#            current_vertex = frontier_queue.pop(0)
-#            for adj_vertex in current_vertex:
-#                if not adj_vertex.dest in discovered_elements:
-#                    discovered_elements.append(adj_vertex.dest)
-#                    prev[adj_vertex.dest] = 
-#                    frontier_queue.append(self.al[adj_vertex.dest])
-#        print(discovered_elements)
-#        return discovered_elements
-        
-    
-#    def breadth_first_search_recur(self, frontier_queue, discovered_elements, 
-#                                   path_of_paths, current_path, end_vertex):
-#        if len(frontier_queue) < 1:
-#            return
-#        current_vertex = frontier_queue.pop(0)
-#        if current_vertex[1] == end_vertex:
-#            path_of_paths.append([current_path + [current_vertex[1]]])
-#            return
-#        
-#        for adj_vertex in current_vertex[0]:
-#                if not adj_vertex.dest in discovered_elements:
-#                    new_frontier = [[self.al[adj_vertex.dest], adj_vertex.dest]] + frontier_queue
-#                    new_discovered = discovered_elements + [adj_vertex.dest]
-#                    self.breadth_first_search_recur(new_frontier, new_discovered, path_of_paths,
-#                                                    current_path + [current_vertex[1]], end_vertex)   
-    
-#    def breadth_first_search_recur(self, frontier_queue, discovered_elements, 
-#                                   path_of_paths, current_path, end_vertex):
-#        if len(frontier_queue) < 1:
-#            return
-#        current_vertex = frontier_queue.pop(0)
-#        if current_vertex == end_vertex:
-#            path_of_paths.append([current_path + [current_vertex]])
-#            return
-#        
-#        for adj_vertex in self.al[current_vertex]:
-#                if not adj_vertex.dest in discovered_elements:
-#                    new_frontier = [adj_vertex.dest] + frontier_queue
-#                    new_discovered = discovered_elements + [adj_vertex.dest]
-#                    self.breadth_first_search_recur(new_frontier, new_discovered, path_of_paths,
-#                                                    current_path + [current_vertex], end_vertex) 
-#    
-#        
-#    def breadth_first_search_helper(self, v):
-#        if v >= len(self.al) or v < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        discovered_elements = []
-#        
-##        frontier_queue.append([self.al[v], v])
-#        frontier_queue.append(v)
-#        discovered_elements.append(v)
-#        
-#        path_of_paths = []
-#        
-#        self.breadth_first_search_recur(frontier_queue, discovered_elements, path_of_paths, [], 15)
-#        print(path_of_paths)
-    
-#    def breadth_first_search(self, v):
-#        if v >= len(self.al) or v < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        discovered_elements = []
-#        
-#        frontier_queue.append([self.al[v], v])
-#        discovered_elements.append(v)
-#        prev = [[] for i in range(len(self.al))]
-#        count = 0
-#        while len(frontier_queue) > 0:
-#            count += 1
-#            current_vertex = frontier_queue.pop(0)
-#            for adj_vertex in current_vertex[0]:
-##                if adj_vertex.dest > current_vertex[1] or not adj_vertex.dest in discovered_elements:
-#                if not adj_vertex.dest in prev[current_vertex[1]]:
-#                    prev[adj_vertex.dest].append(current_vertex[1])
-#                if not adj_vertex.dest in discovered_elements:
-#                    discovered_elements.append(adj_vertex.dest)
-#                    
-#                    frontier_queue.append([self.al[adj_vertex.dest], adj_vertex.dest])
-#        print(count)
-#        print(discovered_elements)
-#        print()
-#        print(prev)
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, 15)
-#        print(path_of_paths)
-#        return discovered_elements
-    
-# FINDS ALL VALUES: KEEP IF SHE WANTS ALL
-#    def breadth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        frontier_queue = [[start_vertex]]
-#        path_of_paths = []
-#        
-#        while len(frontier_queue) > 0:
-#            discovered = frontier_queue.pop(0)
-#            
-#            if discovered[-1] == end_vertex:
-#                path_of_paths.append(discovered)
-#            
-#            for adj_vertex in self.al[discovered[-1]]:
-#                if not adj_vertex.dest in discovered:
-#                    frontier_queue.append(discovered + [adj_vertex.dest])
-#        return path_of_paths
-
-# POPS PATH TO QUEUE: USE IF ALL ELSE FAILS
-#    def breadth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        frontier_queue = [[start_vertex]]
-#        
-#        while len(frontier_queue) > 0:
-#            discovered = frontier_queue.pop(0)
-#            
-#            if discovered[-1] == end_vertex:
-#                return discovered
-#            
-#            for adj_vertex in self.al[discovered[-1]]:
-#                if not adj_vertex.dest in discovered:
-#                    frontier_queue.append(discovered + [adj_vertex.dest])
-#        return []
-    
-#    def breadth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        if start_vertex > end_vertex:            
-#            vertex_index = end_vertex
-#        else:
-#            vertex_index = start_vertex
-#        
-#        discovered = [False for i in range(len(self.al))]
-#        frontier_queue = [[start_vertex]]
-#
-#        while len(frontier_queue) > 0:
-#            current_vertex_path = frontier_queue.pop(0)
-#            
-#            if current_vertex_path[-1] == end_vertex:
-#                return current_vertex_path
-#            
-#            for adj_vertex in self.al[current_vertex_path[-1]]:
-#                if not discovered[adj_vertex.dest - vertex_index]:
-#                    discovered[adj_vertex.dest - vertex_index] = True
-#                    frontier_queue.append(current_vertex_path + [adj_vertex.dest])
-#        return []
 
     # Performs breadth first search on the current graph starting at start_vertex
     # and will terminate if a path to the end_vertex is found.
@@ -418,74 +268,6 @@ class Graph:
                     discovered[adj_vertex.dest] = True
                     frontier_queue.append(current_vertex_path + [adj_vertex.dest])
         return []
-
-    
-#    def breadth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        discovered_elements = []
-#        
-#        frontier_queue.append(start_vertex)
-#
-#        prev = [[] for i in range(len(self.al))]
-#        while len(frontier_queue) > 0:
-#            current_vertex = frontier_queue.pop(0)
-#            # We can't do this right because then 15 could point to 4 which points to 0
-#            if current_vertex != 15:
-#                for adj_vertex in self.al[current_vertex]:
-#                    
-#                    # If we have not seen the vertex, add it to the queue.
-#                    if adj_vertex.dest != start_vertex and len(prev[adj_vertex.dest]) == 0:
-#                        frontier_queue.append(adj_vertex.dest)
-#    
-#                    if not adj_vertex.dest in prev[current_vertex]:
-#                        prev[adj_vertex.dest].append(current_vertex)
-#
-#        print(discovered_elements)
-#        print()
-#        print(prev)
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        print(path_of_paths)
-#        return path_of_paths
-#    
-#    def interpret_results(self, prev, path, path_of_paths, i, start_vertex):
-#        if i == start_vertex:
-#            path_of_paths.append([i] + path)
-#            return
-#        if len(prev[i]) == 0:
-#            return 
-#        for j in range(len(prev[i])):
-#            self.interpret_results(prev, [i] + path, path_of_paths, prev[i][j], start_vertex)
-    
-#    def breadth_first_search_shortest_path(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        frontier_queue.append(start_vertex)
-#        prev = [[] for i in range(len(self.al))]
-#        
-#        while len(frontier_queue) > 0:
-#            current_vertex = frontier_queue.pop(0)
-#            # We can't do this right because then 15 could point to 4 which points to 0
-##            if current_vertex != end_vertex:
-##                for adj_vertex in self.al[current_vertex]:
-#            for adj_vertex in self.al[current_vertex]:
-#
-#                
-#                # If we have not seen the vertex, add it to the queue.
-#                if adj_vertex.dest != start_vertex and len(prev[adj_vertex.dest]) == 0:
-#                    frontier_queue.append(adj_vertex.dest)
-#
-#                if not adj_vertex.dest in prev[current_vertex]:
-#                    prev[adj_vertex.dest].append(current_vertex)
-#        print(prev)
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        return path_of_paths
     
     # Recursive function that performs depth first search based on the current and
     # end vertex.
@@ -534,121 +316,3 @@ class Graph:
         # Performs the depth first search.
         self.depth_first_search_recur(visited_vertices, start_vertex, end_vertex, curr_path)
         return curr_path
- 
-#  NEXT TWO KEEP IF SHE WANTS ALL PATHS BFS
-#    def depth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        visited_vertices = []
-#        path_of_paths = []
-#        if start_vertex > end_vertex:
-#            vertex_index = end_vertex
-#        else:
-#            vertex_index = start_vertex
-#        self.depth_first_search_recur(visited_vertices, path_of_paths,start_vertex, end_vertex, [], vertex_index)
-#        return path_of_paths
-#    def depth_first_search_recur(self,visited_vertices, path_of_paths, current_vertex, terminating_vertex, curr_path):
-#        if current_vertex == terminating_vertex:
-#            path_of_paths.append(curr_path + [current_vertex])
-#            return
-#        
-#        visited_vertices.append(current_vertex)
-#        
-#        curr_path = curr_path + [current_vertex]
-#        for edge in self.al[current_vertex]:
-#
-#            if not edge.dest in  visited_vertices:
-#                self.depth_first_search_recur(visited_vertices, path_of_paths, 
-#                                              edge.dest, terminating_vertex, curr_path)
-#        visited_vertices.remove(current_vertex)
-##        curr_path.pop(0)
-    
-    
-#    def depth_first_search_single_recur(self,visited_vertices, current_vertex, terminating_vertex, curr_path):
-#        if current_vertex == terminating_vertex:
-#            return curr_path + [current_vertex]
-#        
-#        visited_vertices.append(current_vertex)
-#        curr_path = curr_path + [current_vertex]
-#        for edge in self.al[current_vertex]:
-#            if not edge.dest in  visited_vertices:
-#                path = self.depth_first_search_single_recur(visited_vertices, 
-#                                              edge.dest, terminating_vertex, curr_path)
-#                if path[-1] == terminating_vertex:
-#                    return path
-#        visited_vertices.remove(current_vertex)
-#        curr_path.pop(0)
-#        return curr_path
-#    
-#    def depth_first_search_single_path(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-##        visited_vertices = []
-#        
-#        return self.depth_first_search_single_recur([], start_vertex, end_vertex, [])
-        
-
-    
-#    def depth_first_search_single_path(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        visited_vertices = []
-#        stack_vertices = []
-#        stack_vertices.append(start_vertex)
-#        prev = [[] for i in range(len(self.al))]
-#        
-#        while len(stack_vertices) > 0:
-#            current_vertex = stack_vertices.pop()
-#            if current_vertex == end_vertex:
-#                break
-#            if not current_vertex in visited_vertices:
-#                visited_vertices.append(current_vertex)
-#                for adj_vertex in self.al[current_vertex]:
-#                    if not adj_vertex.dest in prev[current_vertex]:
-#                        prev[adj_vertex.dest].append(current_vertex)                        
-#                    stack_vertices.append(adj_vertex.dest)
-#                
-#        print(visited_vertices)
-#        print(prev)
-#        print()
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        return path_of_paths
-    
-    
-#    def depth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        visited_vertices = []
-#        stack_vertices = []
-#        stack_vertices.append(start_vertex)
-#        prev = [[] for i in range(len(self.al))]
-#        
-#        while len(stack_vertices) > 0:
-#            current_vertex = stack_vertices.pop()
-#            if current_vertex == end_vertex:
-#                break
-#            if not current_vertex in visited_vertices:
-#                visited_vertices.append(current_vertex)
-#                for edge in self.al[current_vertex]:
-#                    if not edge.dest in prev[current_vertex]:
-#                        prev[edge.dest].append(current_vertex)                        
-#                    stack_vertices.append(edge.dest)
-#                
-#        print(visited_vertices)
-#        print(prev)
-#        print()
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex)
-#        print(path_of_paths)
-#        return visited_vertices
-        
-    

@@ -1,6 +1,17 @@
-import matplotlib.pyplot as plt
-#import numpy as np
+# Course: CS2302 Data Structures
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 6 - Graphs
+# Author: Nichole Maldonado
+# Professor: Olac Fuentes
+# TA: Anindita Nath
+# Purpose: The purpose of this lab was to represent graphs through adjacency
+#          lists, adjacency matrices, and edge lists. This file tests the
+#          insert edge, delete edge, display, and draw functions for the designated
+#          graph object.  The tests below were provided by the instructor.
 
+import matplotlib.pyplot as plt
+
+# Tests provided by the instructor.
 # Method that runs tests provided by the insructor.
 # Input: a list of graphs that contains an undirected, directed, weighted, and
 #        weighted, directed graph.

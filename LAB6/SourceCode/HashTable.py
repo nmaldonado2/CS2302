@@ -1,3 +1,16 @@
+# Course: CS2302 Data Structures
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 6 - Graphs
+# Author: Nichole Maldonado
+# Professor: Olac Fuentes
+# TA: Anindita Nath
+# Purpose: The purpose of this lab was to represent graphs through adjacency
+#          lists, adjacency matrices, and edge lists. These grahical
+#          representations were then used to solve the riddle concerning a fox,
+#          chicken, sack of grain, and person by using breadth first search and
+#          depth first search.  This file provides the class for a hash table
+#          with chaining. This hash table with chaining was used to store valid
+#          edges that would later be used to populate a graph.
 
 # Class HashTableChain
 # Attributes: 2D list of buckets.

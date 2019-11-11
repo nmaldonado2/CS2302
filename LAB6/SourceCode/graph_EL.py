@@ -1,4 +1,18 @@
-# Edge list representation of graphs
+# Course: CS2302 Data Structures
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 6 - Graphs
+# Author: Nichole Maldonado
+# Professor: Olac Fuentes
+# TA: Anindita Nath
+# Purpose: The purpose of this lab was to represent graphs through adjacency
+#          lists, adjacency matrices, and edge lists. These grahical
+#          representations were then used to solve the riddle concerning a fox,
+#          chicken, sack of grain, and person by using breadth first search and
+#          depth first search.  This file provides the class for edge lists.
+#          Functions included with the class are insert edge, delete edge,
+#          draw, display, breadth first search, depth first search, draw path, 
+#          and convert to other graphical representations.
+
 import numpy as np
 import matplotlib.pyplot as plt
 import graph_AL as al
@@ -137,6 +151,7 @@ class Graph:
             bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        print("Please completely close the graph when done to continue the program.")
         plt.show(block = True)
      
     # Function that draws the edge list and highlights a path, from set_of_edges
@@ -189,7 +204,8 @@ class Graph:
             bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        plt.show(block = True)
+        print("Please completely close graph when done to continue the program.")
+        plt.show(block = True)   
      
     # Converts the current edge list into an edge list.
     # Input: None
@@ -218,108 +234,6 @@ class Graph:
         for edge in self.el:
             adj_list.insert_edge(edge.source, edge.dest, edge.weight)
         return adj_list 
-    
-#    def as_AM(self):
-#        adj_matrix = am.Graph(self.max_dest_or_source(), self.weighted, self.directed)
-#        for edge in self.el:
-#            adj_matrix.insert_edge(edge.source, edge.dest, edge.weight)
-#        return adj_matrix
-#    
-#    def as_AL(self):
-#        adj_list = al.Graph(self.max_dest_or_source(), self.weighted, self.directed)
-#        for edge in self.el:
-#            adj_list.insert_edge(edge.source, edge.dest, edge.weight)
-#        return adj_list 
-    
-# USE BOTTOM TWO ONE FOR SHORTEST PATHS, TOP FOR ALL PATHS 
-#    def breadth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= self.vertices or end_vertex >= self.vertices or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        frontier_queue = [[start_vertex]]
-#        path_of_paths = []
-#        
-#        while len(frontier_queue) > 0:
-#            discovered = frontier_queue.pop(0)
-#            
-#            if discovered[-1] == end_vertex:
-#                path_of_paths.append(discovered)
-#            
-#            for edge in self.el:
-#                if edge.source == discovered[-1] and not edge.dest in discovered:
-#                    frontier_queue.append(discovered + [edge.dest])
-#                elif edge.dest == discovered[-1] and not edge.source in discovered:
-#                    frontier_queue.append(discovered + [edge.source])
-##                if self.am[discovered[-1]][am_column] != -1 and not am_column in discovered:
-##                    frontier_queue.append(discovered + [am_column])
-#        return path_of_paths
-#    
-#    
-#    def breadth_first_search_shortest_path(self, start_vertex, end_vertex):
-#        if start_vertex >= self.vertices or end_vertex >= self.vertices or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        frontier_queue = []
-#        frontier_queue.append(start_vertex)
-#        prev = [[] for i in range(self.vertices)]
-#        
-#        while len(frontier_queue) > 0:
-#            current_vertex = frontier_queue.pop(0)
-#            # We can't do this right because then 15 could point to 4 which points to 0
-##            if current_vertex != end_vertex:
-##                for adj_vertex in self.al[current_vertex]:
-#            for edge in self.el:
-#                if edge.source == current_vertex and edge.dest != start_vertex and len(prev[edge.dest]) == 0:
-#                    frontier_queue.append(edge.dest)
-#                elif edge.dest == current_vertex and edge.source != start_vertex and len(prev[edge.source]) == 0:
-#                    frontier_queue.append(edge.source)
-#                
-#                if edge.source == current_vertex and not edge.dest in prev[current_vertex]:
-#                    prev[edge.dest].append(current_vertex)
-#                elif edge.dest == current_vertex and not edge.source in prev[current_vertex]:
-#                    prev[edge.source].append(current_vertex)
-#        print(prev)
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        return path_of_paths
-    
-    
-#    def breadth_first_search_shortest_path2(self, start_vertex, end_vertex):
-#        frontier_queue = []
-#        discovered_elements = []
-#        
-#        # TODO: First need to find vertex v
-#        frontier_queue.append(start_vertex)
-#        discovered_elements.append(start_vertex)
-#
-#        prev = [[] for i in range(self.max_dest_or_source())]
-#        
-#        while len(frontier_queue) > 0:
-#            current_vertex = frontier_queue.pop(0)
-#            for edge in self.el:
-#                
-#                # Makes sure that the before adding to adjacent vertex to prev,
-#                # it is not already a parent of the current vertex.
-#                if edge.source == current_vertex and not edge.dest in prev[edge.source]:
-#                    prev[edge.dest].append(edge.source)
-#                if edge.dest == current_vertex and not edge.source in prev[edge.dest]:
-#                    prev[edge.source].append(edge.dest)
-#                
-#                if edge.source == current_vertex and not edge.dest in discovered_elements:
-#                    discovered_elements.append(edge.dest)
-#                    frontier_queue.append(edge.dest)
-#                elif edge.dest == current_vertex and not edge.source in discovered_elements:
-#                    discovered_elements.append(edge.source)
-#                    frontier_queue.append(edge.source)
-#                    
-##        print(discovered_elements)
-##        print()
-##        print(prev)
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        print(path_of_paths)
-#        return discovered_elements
         
     # Performs breadth first search on the current graph starting at start_vertex
     # and will terminate if a path to the end_vertex is found.
@@ -424,92 +338,3 @@ class Graph:
         # Performs the depth first search.
         self.depth_first_search_recur(visited_vertices, start_vertex, end_vertex, curr_path)
         return curr_path        
-
-
-
-#    def interpret_results(self, prev, path, path_of_paths, i, start_vertex):
-#        if i == start_vertex:
-#            path_of_paths.append([i] + path)
-#            return
-#        if len(prev[i]) == 0:
-#            return 
-#        for j in range(len(prev[i])):
-#            self.interpret_results(prev, [i] + path, path_of_paths, prev[i][j], start_vertex)
-
-
-# IF SHE WANTS ALL COMBOS FOR DFS USE THE BOTTOM TWO    
-#    def depth_first_search_recur(self,visited_vertices, path_of_paths, current_vertex, terminating_vertex, curr_path):
-#        if current_vertex == terminating_vertex:
-#            path_of_paths.append(curr_path + [current_vertex])
-#            return
-#        
-#        visited_vertices.append(current_vertex)
-#        curr_path = curr_path + [current_vertex]
-#        for edge in self.el:
-#            if edge.source == current_vertex and not edge.dest in visited_vertices:
-#                self.depth_first_search_recur(visited_vertices, path_of_paths, 
-#                                              edge.dest, terminating_vertex, curr_path)
-#            elif edge.dest == current_vertex and not edge.source in visited_vertices:
-#                self.depth_first_search_recur(visited_vertices, path_of_paths, 
-#                                              edge.source, terminating_vertex, curr_path)
-##            if not edge.dest in  visited_vertices:
-##                self.depth_first_search_recur(visited_vertices, path_of_paths, 
-##                                              edge.dest, terminating_vertex, curr_path)
-#        visited_vertices.remove(current_vertex)
-##        curr_path.pop(0)
-#        
-#        
-#    def depth_first_search(self, start_vertex, end_vertex):
-#        if start_vertex >= self.vertices or end_vertex >= self.vertices or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        visited_vertices = []
-#        path_of_paths = []
-#        
-#        self.depth_first_search_recur(visited_vertices, path_of_paths,start_vertex, end_vertex, [])
-#        return path_of_paths
-    
-#    def depth_first_search_single_path(self, start_vertex, end_vertex):
-#        if start_vertex >= self.vertices or end_vertex >= self.vertices or start_vertex < 0 or end_vertex < 0:
-#            print("Error, vertex is out of range.")
-#            return
-#        
-#        visited_vertices = []
-#        stack_vertices = []
-#        stack_vertices.append(start_vertex)
-#        prev = [[] for i in range(self.vertices)]
-#        
-#        while len(stack_vertices) > 0:
-#            current_vertex = stack_vertices.pop()
-#            if current_vertex == end_vertex:
-#                break
-#            if not current_vertex in visited_vertices:
-#                visited_vertices.append(current_vertex)
-#                for edge in self.el:
-#                    if edge.source == current_vertex and not edge.dest in prev[current_vertex]:
-#                        prev[edge.dest].append(current_vertex)
-#                    elif edge.dest == current_vertex and not edge.source in prev[current_vertex]:
-#                        prev[edge.source].append(current_vertex)
-##                    if not adj_vertex.dest in prev[current_vertex]:
-##                        prev[adj_vertex.dest].append(current_vertex) 
-#                    if edge.source == current_vertex:
-#                        stack_vertices.append(edge.dest)
-#                    elif edge.dest == current_vertex:
-#                        stack_vertices.append(edge.source)
-#        print(visited_vertices)
-#        print(prev)
-#        print()
-#        path_of_paths = []
-#        self.interpret_results(prev, [], path_of_paths, end_vertex, start_vertex)
-#        return path_of_paths
-    
-    
-#    def interpret_results(self, prev, path, path_of_paths, i):
-#        if i == 0:
-#            path_of_paths.append([i] + path)
-#            return
-#        if len(prev[i]) == 0:
-#            return 
-#        for j in range(len(prev[i])):
-#            self.interpret_results(prev, [i] + path, path_of_paths, prev[i][j])

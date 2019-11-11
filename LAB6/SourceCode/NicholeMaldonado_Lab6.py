@@ -1,3 +1,18 @@
+# Course: CS2302 Data Structures
+# Date of Last Modification: October 31, 2019
+# Assignment: Lab 6 - Graphs
+# Author: Nichole Maldonado
+# Professor: Olac Fuentes
+# TA: Anindita Nath
+# Purpose: The purpose of this lab was to represent graphs through adjacency
+#          lists, adjacency matrices, and edge lists. These grahical
+#          representations were then used to solve the riddle concerning a fox,
+#          chicken, sack of grain, and person by using breadth first search and
+#          depth first search.  This program allows the users to create their
+#          own custom graph, solve the riddle, run the tests provided by the
+#          instructor, and run automated tests.  These tests compare the runtime
+#          between the different graphs' operations.
+
 import graph_AL as al
 import graph_AM as am
 import graph_EL as el
