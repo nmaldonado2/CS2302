@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 31, 2019
+# Date of Last Modification: November 14, 2019
 # Assignment: Lab 6 - Graphs
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -145,6 +145,7 @@ class Graph:
         fig.set_size_inches(15,9)
         title = "am" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
+        plt.ioff()
     
     # Function that draws the adjacency matrix and highlights a path, from
     # set_of_edges in red.
@@ -201,6 +202,7 @@ class Graph:
         fig.set_size_inches(15,9)
         title = "am_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
+        plt.ioff()
     
     # Populates a directed graph passed in as a parameter based off the edges in
     # the current graph.

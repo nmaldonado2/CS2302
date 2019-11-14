@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 31, 2019
+# Date of Last Modification: November 14, 2019
 # Assignment: Lab 6 - Graphs
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes

@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: October 31, 2019
+# Date of Last Modification: November 14, 2019
 # Assignment: Lab 6 - Graphs
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
@@ -246,6 +246,7 @@ class Graph:
         title = "el" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         fig.set_size_inches(15,9)
         plt.savefig(title, dpi = 200)
+        plt.ioff()
      
     # Function that draws the edge list and highlights a path, from set_of_edges
     # in red.
@@ -302,6 +303,7 @@ class Graph:
         fig.set_size_inches(15,9)
         title = "el_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)  
+        plt.ioff()
      
     # Converts the current edge list into an edge list.
     # Input: None
