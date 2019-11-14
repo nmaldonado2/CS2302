@@ -25,11 +25,11 @@ from scipy.interpolate import interp1d
 #             weighted, a boolean that represents if the graph is directed,
 #             and a string representation of the graph.
 # Behaviours: insert_edge, delete_edge, display, draw, as_AM, as_AL, as_EL, 
-#             draw_path, breadth first search, and depth first search.
+#             draw_path, breadth_first_search, and depth_first_search.
 class Graph:
     
     # Provided by the instructor
-    # Constructor for the adjacnecy matrix representaion of a graph.
+    # Constructor for the adjacenecy matrix representaion of a graph.
     # Input: the number of vertices the graph will contain and whether the
     #         graph is weighted or directed.
     # Output: None
@@ -140,10 +140,11 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        
+        # Saves graph as a .png.
         fig.set_size_inches(15,9)
         title = "am" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
-#        plt.show(block=True)
     
     # Function that draws the adjacency matrix and highlights a path, from
     # set_of_edges in red.
@@ -195,6 +196,8 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        
+        # Saves graph as a .png.
         fig.set_size_inches(15,9)
         title = "am_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
@@ -212,6 +215,9 @@ class Graph:
                     if self.am[i][j] != -1:
                         if graph.representation == "AL":
                             graph.insert_edge(i, j, self.am[i][j])
+                            
+                        # Since the adjacency matrix naturally orders the edges,
+                        # they are simply appended to the edge list.
                         elif graph.representation == "EL":
                             graph.el.append(el.Edge(i, j, self.am[i][j]))
     
@@ -221,7 +227,7 @@ class Graph:
     # Output: None.
     def convert_undirected_graph(self, graph):
         
-        # Iterates through all elements left of the matix's diagonal line and
+        # Iterates through all elements right of the matix's diagonal line and
         # only inserts edges if the matrix does not have a negative one in the
         # cell.
         for i in range(len(self.am)):
@@ -229,6 +235,9 @@ class Graph:
                     if self.am[i][j] != -1:
                         if graph.representation == "AL":
                             graph.insert_edge(i, j, self.am[i][j])
+                            
+                        # Since the adjacency matrix naturally orders the edges,
+                        # they are simply appended to the edge list.
                         elif graph.representation == "EL":
                             graph.el.append(el.Edge(i, j, self.am[i][j]))
     
@@ -289,8 +298,7 @@ class Graph:
         # vertex is not found.
         while len(frontier_queue) > 0:
             
-            # Pops the path with the current vertex as the last most
-            # element.
+            # Pops the current vertex
             current_vertex = frontier_queue.pop(0)
             
             # Returns the path if the end vertex is found.
@@ -298,8 +306,7 @@ class Graph:
                 return self.interpret_path(path, current_vertex)
             
             # Pushes all adjacent vertices to the queue if the adjacent
-            # vertex has not been discovered.  The adjacent vertex is appended
-            # to the current_vertex path and is pushed.
+            # vertex has not been discovered.
             for am_column in range(len(self.am[current_vertex])):
                 if self.am[current_vertex][am_column] != -1 and not discovered[am_column]:
                     discovered[am_column] = True
@@ -318,24 +325,23 @@ class Graph:
             return [current_vertex]
         return self.interpret_path(path, path[current_vertex]) + [current_vertex]
 
-    # Recursive function that performs depth first search based on the current and
-    # end vertex.
-    # Input: A list that keeps track of the visisted vertices, the current vertex,
-    #        the end vertex, and the current path.
+    # Recursive function that performs depth first search based on the current 
+    # and end vertex.
+    # Input: A list that keeps track of the visisted vertices, the current
+    #        vertex, the end vertex, and the current path.
     # Output: None
     def depth_first_search_recur(self,visited_vertices, current_vertex, end_vertex, curr_path):
         
-        # If current_vertex matches the end_vertex, the current vertex is appended
-        # to the curr_path and the recursive call ends.
+        # If current_vertex matches the end_vertex, the current vertex is 
+        # appended to the curr_path and the recursive call ends.
         if current_vertex == end_vertex:
             curr_path.append(current_vertex)
             return
         
-        # If the current_vertex has not been visisted, then a recursive call
-        # is made for each adjacent vertex.
+        # Marks current_vertex as visited.
         visited_vertices[current_vertex] = True
             
-        # Only adds adajcecnt vertices if a negative one does not exist in the cell.
+        # Makes recursive calls for each adjacent vertex.
         for am_column in range(len(self.am[current_vertex])):
             if self.am[current_vertex][am_column] != -1 and not visited_vertices[am_column]:
                 self.depth_first_search_recur(visited_vertices, 

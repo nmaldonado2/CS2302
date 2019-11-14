@@ -50,7 +50,7 @@ def create_graph(menu):
     
     return graph
 
-# Converts a path of path integers into a set by adding pairs, that reprent
+# Converts a path of integers into a set by adding pairs, that represent
 # edges to the set.
 # Input: A list of integers that represents a path between vertices.
 # Output: A set with the edges of the path.
@@ -62,7 +62,7 @@ def path_to_set(path):
         set_of_edges.add((path[i], path[i]))
     return set_of_edges
 
-# Functions that returns the graph type based on the graph representation.
+# Function that returns the graph type based on the graph representation.
 # Input: A string of characters that is either "AL", "AM", or "EL".
 # Output: A string of the graph type based on the graph's representation.
 def representation_to_text(representation):
@@ -74,17 +74,17 @@ def representation_to_text(representation):
 
 # Function that displays the graphs and prints the graph if designated by the
 # boolean draw_graph.
-# Input: The graph to be displayed and a boolean that signifies the draw
-#        for the graph if True.
+# Input: The graph to be displayed and a boolean that signifies if the graph
+#        fwill be drawn
 # Output: None, other than the graph will be displayed and potentially drawn.
-#
 def display_graph(graph, draw_graph):
     graph_type = representation_to_text(graph.representation)
     print(graph_type, ":")
     graph.display()
     print()
     if draw_graph:
-        print("Graph based on the", graph_type, end = " will be stored in the current directory.\n")
+        print("Graph based on the", graph_type, end = " ")
+        print("will be stored in the current directory.\n")
         graph.draw()
         print()
 
@@ -107,7 +107,7 @@ def print_characters(characters):
     for i in range(len(characters)):
         print(characters[i], end = "")
         
-        # Prints the appropriate punctuation based on the current words position
+        # Prints the appropriate punctuation based on the current word's position
         # in the sentence.
         if i == len(characters) - 1:
             print(end = " ")
@@ -131,10 +131,10 @@ def print_direction(direction):
     else:
         print("left side of the river.")
 
-# Function that will print the current characters and where move with
-# reference to the lake.
+# Function that will print the current characters and where they move with
+# reference to the river.
 # Input: A list of characters and a interger representing which side of the 
-#        the lake the characters will move to.
+#        the river the characters will move to.
 # Output: None
 # Assume that direction is an integer that is either 1 or 2.
 def print_move(characters, direction):
@@ -146,9 +146,9 @@ def print_move(characters, direction):
     print_direction(direction)
 
 # Function that will print the current characters and where they will stay with
-# reference to the lake.
+# reference to the river.
 # Input: A list of characters and a interger representing which side of the 
-#        the lake the characters will stay on.
+#        the river the characters will stay on.
 # Output: None
 # Assume that direction is an integer that is either 1 or 2.
 def print_stayed(characters, direction):
@@ -193,8 +193,8 @@ def different_moves(individual_move, move_before):
                 else:
                     char_who_moved_right.append("person")
         
-        # Otherwise, the characters are added to the corresponding char_who_stayed
-        # list.
+        # Otherwise, the characters are added to the corresponding 
+        # char_who_stayed list.
         else:
             if individual_move[i] == "0":
                 if i == 0:
@@ -230,7 +230,7 @@ def different_moves(individual_move, move_before):
         print_stayed(char_who_stayed_right, 1)
     print()
 
-# Function that would compare the current and past move and determine which
+# Function that compares the current and past move and determines which
 # functions to call to print the results.
 # Input: Two strings of binary inputs with 4 bits each that specify the current
 #        individual move and the past move.
@@ -270,12 +270,16 @@ def interpret_solutions(valid_path):
 def graph_configuration(graph_type, searching_alg_type):
     graph = create_graph(graph_type)
     display_graph(graph, True)
+    
+    # Solves riddle by breadth first search.
     if searching_alg_type == 1:
         start_time = time.perf_counter()
         path = graph.breadth_first_search(0, 15)
         end_time = time.perf_counter()
         print("Runtime: %0.6f seconds\n"%(end_time - start_time))
         interpret_solutions(path)
+        
+    # Solves riddle by depth first search.
     else:
         start_time = time.perf_counter()
         path = graph.depth_first_search(0, 15)
@@ -287,9 +291,9 @@ def graph_configuration(graph_type, searching_alg_type):
         set_of_edges = path_to_set(path)
         graph.draw_path(set_of_edges)
 
-# Function that will allow users to select the graph implementation.
+# Function that allows users to select the graph implementation.
 # Input: None
-# Output: =The menu number based on the user's selection.  If the menu is one,
+# Output: The menu number based on the user's selection.  If the menu is one,
 #          adjacency list is selected.  If two is selected, the matrix is selected.
 #          If three is chosen,  the edge list is selected.
 def select_graph_types():
@@ -396,7 +400,7 @@ def display_all_graphs(list_of_graphs):
 # Input: A list of graphs that will be populated with the edges from edge_combos.
 #        edge_combos is a 2D list, that contains (source, destination, weight)
 #        edges in the buckets.
-# Output: None, other than the runtime is dipslayed.
+# Output: None, other than the runtime is displayed.
 def insert_test(list_of_graphs, edge_combos):
     
     # Populates each graph in list_of_graphs with the edges in edge_combos.
@@ -408,7 +412,8 @@ def insert_test(list_of_graphs, edge_combos):
         for bucket in edge_combos:
             for edge_pair in bucket:
                 
-                # If the graph is weighted, then the corresponding weight is included.
+                # If the graph is weighted, then the corresponding weight is 
+                # included.
                 if list_of_graphs[i].weighted:
                         list_of_graphs[i].insert_edge(edge_pair[0], edge_pair[1], edge_pair[2])
                         
@@ -433,30 +438,37 @@ def different_representations_test(list_of_graphs, print_graphs):
         start_time = time.perf_counter()
         g = graph.as_AL()
         end_time = time.perf_counter()
-        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        print("Runtime: %0.6f seconds"%(end_time - start_time))
         if print_graphs:
             print("New ",end = "")
             display_graph(g, False)
+        else:
+            print()
         
         # Runs test for conversion to an adjacency matrix.
         print(graph_type, "to Adjacency Matrix:")
         start_time = time.perf_counter()
         g = graph.as_AM()
         end_time = time.perf_counter()
-        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        print("Runtime: %0.6f seconds"%(end_time - start_time))
         if print_graphs:
             print("New ",end = "")
             display_graph(g, False)
+        else:
+            print()
         
         # Runs test for conversion to an edge list.
         print(graph_type, "to Edge List:")
         start_time = time.perf_counter()
         g = graph.as_EL()
         end_time = time.perf_counter()
-        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        print("Runtime: %0.6f seconds"%(end_time - start_time))
+        
         if print_graphs:
             print("New ",end = "")
             display_graph(g, False)
+        else:
+            print()
         print("----------")
 
 # Function that tests the depth first search method that finds a valid path
@@ -476,10 +488,12 @@ def dfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
         start_time = time.perf_counter()
         path = graph.depth_first_search(start_vertex, end_vertex)
         end_time = time.perf_counter()
-        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        print("Runtime: %0.6f seconds"%(end_time - start_time))
         
         if print_paths:
             print("Path: ", path, "\n")
+        else:
+            print()
 
 # Function that tests the breadth first search method that finds a valid path
 # from the start_vertex to end_vertex.
@@ -498,10 +512,12 @@ def bfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
         start_time = time.perf_counter()
         path = graph.breadth_first_search(start_vertex, end_vertex)
         end_time = time.perf_counter()
-        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        print("Runtime: %0.6f seconds"%(end_time - start_time))
         
         if print_paths:
             print("Path: ", path, "\n")
+        else:
+            print()
 
 # Function that tests the delete_edge for the adjacency list, adjacency matrix,
 # and edge list graphs.
@@ -547,7 +563,7 @@ def display_test(list_of_graphs):
 def draw_test(list_of_graphs):
     print("All graph drawings will be stored in the current directory.")
     
-    # Displays graphs.
+    # Draws graphs.
     for graph in list_of_graphs:  
         print("Drawing for ", representation_to_text(graph.representation))
         start_time = time.perf_counter()
@@ -637,9 +653,10 @@ def run_automated_diff_rep(graph_size, print_graphs):
 
 # Function that initiates the tests for depth first search.
 # Input: The size of graphs to be created and a boolean that determines whether
-#        the graphs will be printed.
+#        the graphs will be printed. The boolean small_graph_selection is only
+#        for lab demos to draw the graphs with 10 vertices.
 # Output: None        
-def run_automated_dfs(graph_size, print_graphs):
+def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     
     # Creates random start and end vertices that will be used for the depth
     # first search.
@@ -650,6 +667,8 @@ def run_automated_dfs(graph_size, print_graphs):
     list_of_graphs = generate_test_graphs(graph_size, 5)
     
     print("For all DFS, start vertex = %d, end vertex = %d" % (start_vertex, end_vertex))
+    if small_graph_selection and print_graphs:
+        print("A reference image of the graphs will be saved to the current directory")
 
     # Runs tests for undirected graphs.
     print("\nUndirected Graphs DFS")
@@ -657,6 +676,10 @@ def run_automated_dfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[0])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[0][0].draw()
     dfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs)
     
     # Runs tests for directed graphs.
@@ -665,6 +688,10 @@ def run_automated_dfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[1])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[1][0].draw()
     dfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs)
     
     # Runs tests for weighted graphs.
@@ -673,6 +700,10 @@ def run_automated_dfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[2])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[2][0].draw()
     dfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs)
      
     # Runs tests for directed, weighted graphs.
@@ -681,13 +712,18 @@ def run_automated_dfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[3])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[3][0].draw()
     dfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs)
 
 # Function that initiates the tests for breadth first search.
 # Input: The size of graphs to be created and a boolean that determines whether
-#        the graphs will be printed.
+#        the graphs will be printed. The boolean small_graph_selection is only
+#        for lab demos to draw the graphs with 10 vertices.
 # Output: None   
-def run_automated_bfs(graph_size, print_graphs):
+def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     
     # Creates random start and end vertices that will be used for the breadth
     # first search.
@@ -698,6 +734,9 @@ def run_automated_bfs(graph_size, print_graphs):
     list_of_graphs = generate_test_graphs(graph_size, 4)
 
     print("For all BFS, start vertex = %d, end vertex = %d" % (start_vertex, end_vertex))
+
+    if small_graph_selection and print_graphs:
+        print("A reference image of the graphs will be saved to the current directory")
     
     # Runs tests for undirected graphs.
     print("\nUndirected Graphs BFS")
@@ -705,6 +744,10 @@ def run_automated_bfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[0])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[0][0].draw()
     bfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs)
     
     # Runs tests for directed graphs.
@@ -713,6 +756,10 @@ def run_automated_bfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[1])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[1][0].draw()
     bfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs)
     
     # Runs tests for weighted graphs.
@@ -721,6 +768,10 @@ def run_automated_bfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[2])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[2][0].draw()
     bfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs)
      
     # Runs tests for weighted, directed graphs.
@@ -729,6 +780,10 @@ def run_automated_bfs(graph_size, print_graphs):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[3])
+        
+        # For the lab demos, prints the graphs with only 10 vertices for reference.
+        if small_graph_selection:
+            list_of_graphs[3][0].draw()
     bfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs)
 
 # Function that initiates the tests for the graphs' edge deletions.
@@ -913,8 +968,8 @@ def automated_test_setup():
     print()
     if menu >= 1 and menu <= 7:
         
+        # Prompts users to select the graph size to be tested.
         if menu >= 1 and menu <= 5:
-            # Prompts users to select the graph size to be tested.
             print("Select a graph size")
             print("1. 10 vertices and 15 edges")
             print("2. 500 vertices and 150 edges")
@@ -936,8 +991,13 @@ def automated_test_setup():
         if size_selection >= 1 and size_selection <= 4:
             graph_size = graph_size[size_selection - 1]
             
+            if graph_size == 10:
+                small_graph_selection = True
+            else:
+                small_graph_selection = False
+            
+            # Determines if the user wants the graphs displayed.
             if menu != 6:
-                # Determines if the user wants the graphs displayed.
                 print("Would you like to display the graph?")
                 print("1. Yes")
                 print("2. No")
@@ -962,9 +1022,9 @@ def automated_test_setup():
             elif menu == 3:
                 run_automated_diff_rep(graph_size, print_graphs)
             elif menu == 4:
-                run_automated_bfs(graph_size, print_graphs)
+                run_automated_bfs(graph_size, print_graphs, small_graph_selection)
             elif menu == 5:
-                run_automated_dfs(graph_size, print_graphs)
+                run_automated_dfs(graph_size, print_graphs, small_graph_selection)
             elif menu == 6:
                 run_automated_display(graph_size)
             else:
@@ -1148,33 +1208,36 @@ def custom_graph_interface(graph):
     # as long as a valid menu number is selected.
     while  menu >= 1 and menu <= 7:
         
-        # Insert edge.
-        if menu == 1:
-            custom_insert(graph)
-        
-        # Delete edge.
-        elif menu == 2:
-            custom_delete(graph)
-        
-        # Convert to a different graph representation.
-        elif menu == 3:
-            custom_graph_rep(graph)
+        try:
+            # Insert edge.
+            if menu == 1:
+                custom_insert(graph)
             
-        # Perform breadth first search.
-        elif menu == 4:
-            custom_bfs(graph)
+            # Delete edge.
+            elif menu == 2:
+                custom_delete(graph)
             
-        # Perform depth first search.
-        elif menu == 5:
-            custom_dfs(graph)
-            
-        # Display the graph.
-        elif menu == 6:
-            custom_display(graph)
-            
-        # Draw the graph.
-        else:
-            custom_draw(graph)
+            # Convert to a different graph representation.
+            elif menu == 3:
+                custom_graph_rep(graph)
+                
+            # Perform breadth first search.
+            elif menu == 4:
+                custom_bfs(graph)
+                
+            # Perform depth first search.
+            elif menu == 5:
+                custom_dfs(graph)
+                
+            # Display the graph.
+            elif menu == 6:
+                custom_display(graph)
+                
+            # Draw the graph.
+            else:
+                custom_draw(graph)
+        except ValueError:
+            print("Invalid input. Please try again.\n")
         menu = custom_graph_function_selection_menu()
         print()
 
@@ -1198,7 +1261,10 @@ def create_graph_menu():
             print("Do you want the graph to be weighted or unweighted?")
             print("1. Weighted")
             print("2. Unweighted")
-            weighted = int(input("Select 1 or 2: "))
+            try:
+                weighted = int(input("Select 1 or 2: "))
+            except ValueError:
+                weighted = 3
             print()
             
             if weighted == 1:
@@ -1214,7 +1280,10 @@ def create_graph_menu():
             print("Do you want the graph to be directed or undirected?")
             print("1. Directed")
             print("2. Undirected")
-            directed = int(input("Select 1 or 2: "))
+            try:
+                directed = int(input("Select 1 or 2: "))
+            except ValueError:
+                directed = 3
             print()
             
             if directed == 1:
@@ -1222,7 +1291,7 @@ def create_graph_menu():
             elif directed == 2:
                 directed = False
             else:
-                print("Invalid selection. The graph will be undirected.")
+                print("Invalid selection. The graph will be undirected.\n")
                 directed = False
             
             #Creates an adjacency list graph based on the user chosen attributes.

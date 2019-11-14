@@ -38,7 +38,7 @@ class Edge:
 #             weighted, a boolean that represents if the graph is directed,
 #             and a string representation of the graph.
 # Behaviours: insert_edge, delete_edge, display, draw, as_AM, as_AL, as_EL, 
-#             draw_path, breadth first search, and depth first search.  
+#             draw_path, breadth_first_search, and depth_first_search.  
 class Graph:
     
     # Provided by the instructor
@@ -144,6 +144,8 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        
+        # Added to save the graph rather than display on the terminal.
         fig.set_size_inches(15,9)
         title = "al" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
@@ -198,6 +200,8 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
+        
+        # Saves graph as a .png.
         fig.set_size_inches(15,9)
         title = "al_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
@@ -214,7 +218,8 @@ class Graph:
                 num_inserted = 0
                 if self.directed or edge.dest >= i:
                     edge_list.insert_edge_(i, edge.dest, edge.weight, 
-                                           len(edge_list.el) - 1 - num_inserted, len(edge_list.el) - 1)
+                                           len(edge_list.el) - 1 - num_inserted, 
+                                           len(edge_list.el) - 1)
                     num_inserted += 1
         return edge_list
     
@@ -260,8 +265,7 @@ class Graph:
         # vertex is not found.
         while len(frontier_queue) > 0:
             
-            # Pops the path with the current vertex as the last most
-            # element.
+            # Pops the current vertex.
             current_vertex = frontier_queue.pop(0)
             
             # Returns the path if the end vertex is found.
@@ -269,8 +273,7 @@ class Graph:
                 return self.interpret_path(path, current_vertex)
             
             # Pushes all adjacent vertices to the queue if the adjacent
-            # vertex has not been discovered.  The adjacent vertex is appended
-            # to the current_vertex path and is pushed.
+            # vertex has not been discovered.
             for adj_vertex in self.al[current_vertex]:
                 if not discovered[adj_vertex.dest]:
                     discovered[adj_vertex.dest] = True
@@ -303,10 +306,11 @@ class Graph:
             curr_path.append(current_vertex)
             return
 
-        # If the current_vertex has not been visited, then a recursive call
-        # is made for each adjacent vertex.
-     
+        # The current vertex ia marked as visisted.
         visited_vertices[current_vertex] = True
+        
+        # A recursive call is made for all adjacent vertices that have not been
+        # visited.
         for edge in self.al[current_vertex]:
             if not visited_vertices[edge.dest]:
                 self.depth_first_search_recur(visited_vertices, 
@@ -325,7 +329,7 @@ class Graph:
     def depth_first_search(self, start_vertex, end_vertex):
         
         # Ensures that start_vertex and end_vertex are within the bounds of the
-        # adjacency matrix.
+        # adjacency list.
         if start_vertex >= len(self.al) or end_vertex >= len(self.al) or start_vertex < 0 or end_vertex < 0:
             print("Error, vertex is out of range.")
             return

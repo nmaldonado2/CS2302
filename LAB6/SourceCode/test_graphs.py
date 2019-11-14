@@ -12,7 +12,7 @@
 import matplotlib.pyplot as plt
 
 # Tests provided by the instructor.
-# Method that runs tests provided by the insructor.
+# Fuction that runs tests provided by the insructor.
 # Input: a list of graphs that contains an undirected, directed, weighted, and
 #        weighted, directed graph.
 # Output: None, other than the graphs are displayed after the operations are
@@ -86,6 +86,6 @@ def run_tests(graph_of_graphs):
     g.draw()
     
     # Displays the weigthed and directed graph as an adjacency list.
-    print("Weighted and Directed graph as an adjacency list.")
+    print("\nWeighted and Directed graph as an adjacency list.")
     g1=g.as_AL()
     g1.draw()

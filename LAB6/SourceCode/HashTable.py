@@ -34,6 +34,7 @@ class HashTableChain(object):
     # Input: k, in the format of (source, destination, edge)
     # Output: 1 if the insertion was successful or -1 otherwise.
     def insert(self,k):
+        
         # Inserts k in appropriate bucket (list) 
         # Does nothing if k is already in the table
         b1 = self.h(k[0])
