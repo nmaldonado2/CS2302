@@ -94,9 +94,9 @@ def display_graph(graph, draw_graph):
 # Output: None
 def print_start_end(move):
     if move == "0000":
-        print("The person, fox, chicken, and grain start on the left side of the lake.\n")
+        print("The person, fox, chicken, and grain start on the left side of the river.\n")
     else:
-        print("The person, fox, chicken, and grain end on the right side of the lake.")
+        print("The person, fox, chicken, and grain end on the right side of the river.")
  
 # Function that prints all the characters in a list.
 # Input: A list that contains a string of characters from the riddle that will
@@ -119,17 +119,17 @@ def print_characters(characters):
             else:
                 print(end = " and ")
 
-# Function that prints the side of the lake.
-# Input: The direction that signifies which side of the lake needs to be printed.
+# Function that prints the side of the river.
+# Input: The direction that signifies which side of the river needs to be printed.
 #        If the direction is one, then right side is printed.  Otherwise left
 #        side is printed.
 # Output: None
 # Assume that direction is an integer that is either 1 or 2.
 def print_direction(direction):
     if direction == 1:
-        print("right side of the lake.")
+        print("right side of the river.")
     else:
-        print("left side of the lake.")
+        print("left side of the river.")
 
 # Function that will print the current characters and where move with
 # reference to the lake.
