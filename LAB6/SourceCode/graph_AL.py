@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import graph_AM as am
 import graph_EL as el
+import datetime
 from scipy.interpolate import interp1d
 
 # Class Edge
@@ -143,8 +144,9 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close the graph when done to continue the program.")
-        plt.show(block = True)
+        fig.set_size_inches(15,9)
+        title = "al" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        plt.savefig(title, dpi = 200)
     
     # Function that draws the edge list and highlights a path, from set_of_edges
     # in red.
@@ -196,8 +198,9 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close the graph when done to continue the program.")
-        plt.show(block = True)
+        fig.set_size_inches(15,9)
+        title = "al_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        plt.savefig(title, dpi = 200)
     
     # Converts the current adjacency list into an edge list.
     # Input: None
@@ -208,8 +211,11 @@ class Graph:
         edge_list = el.Graph(len(self.al),self.weighted, self.directed)
         for i in range(len(self.al)):
             for edge in self.al[i]:
-                if self.directed or edge.dest > i:
-                    edge_list.insert_edge(i, edge.dest, edge.weight)
+                num_inserted = 0
+                if self.directed or edge.dest >= i:
+                    edge_list.insert_edge_(i, edge.dest, edge.weight, 
+                                           len(edge_list.el) - 1 - num_inserted, len(edge_list.el) - 1)
+                    num_inserted += 1
         return edge_list
     
     # Converts the current adjacency list into an adjacency matrix.
@@ -246,7 +252,9 @@ class Graph:
         # Creates a queue that will store the paths and the next vertex to be
         # visited. Discovered keeps track of the discovered vertices.
         discovered = [False for i in range(len(self.al))]
-        frontier_queue = [[start_vertex]]
+        discovered[start_vertex] = True
+        frontier_queue = [start_vertex]
+        path = np.zeros(len(self.al), dtype = np.int) - 1
 
         # Continues to iterate while the queue is not empty or until the end
         # vertex is not found.
@@ -254,20 +262,33 @@ class Graph:
             
             # Pops the path with the current vertex as the last most
             # element.
-            current_vertex_path = frontier_queue.pop(0)
+            current_vertex = frontier_queue.pop(0)
             
             # Returns the path if the end vertex is found.
-            if current_vertex_path[-1] == end_vertex:
-                return current_vertex_path
+            if current_vertex == end_vertex:
+                return self.interpret_path(path, current_vertex)
             
             # Pushes all adjacent vertices to the queue if the adjacent
             # vertex has not been discovered.  The adjacent vertex is appended
             # to the current_vertex path and is pushed.
-            for adj_vertex in self.al[current_vertex_path[-1]]:
+            for adj_vertex in self.al[current_vertex]:
                 if not discovered[adj_vertex.dest]:
                     discovered[adj_vertex.dest] = True
-                    frontier_queue.append(current_vertex_path + [adj_vertex.dest])
+                    frontier_queue.append(adj_vertex.dest)
+                    path[adj_vertex.dest] = current_vertex
         return []
+    
+    # Function that traces a path that for each index has the previous vertex
+    # from the path created by BFS ending at current_vertex.
+    # Input: A path from BFS that has the previous vertex that came before
+    #        the vertex represented by the current vertex.  If there was not a
+    #        previous vertex, then -1 is located at the index.
+    # Output: A path to the current vertex from the origin created by BFS.
+    def interpret_path(self, path, current_vertex):
+        if path[current_vertex] == -1:
+            return [current_vertex]
+        return self.interpret_path(path, path[current_vertex]) + [current_vertex]
+    
     
     # Recursive function that performs depth first search based on the current and
     # end vertex.
@@ -284,18 +305,19 @@ class Graph:
 
         # If the current_vertex has not been visited, then a recursive call
         # is made for each adjacent vertex.
-        if not visited_vertices[current_vertex]:
-            visited_vertices[current_vertex] = True
-            for edge in self.al[current_vertex]:
+     
+        visited_vertices[current_vertex] = True
+        for edge in self.al[current_vertex]:
+            if not visited_vertices[edge.dest]:
                 self.depth_first_search_recur(visited_vertices, 
-                                              edge.dest, end_vertex, curr_path)
-                
-                # Checks curr_path after each recursive call. If the last element
-                # has been found, the the current vertex is prepended and ends
-                # the recursive call.
-                if len(curr_path) > 0 and curr_path[-1] == end_vertex:
-                    curr_path.insert(0, current_vertex)
-                    return
+                                          edge.dest, end_vertex, curr_path)
+            
+            # Checks curr_path after each recursive call. If the last element
+            # has been found, the the current vertex is prepended and ends
+            # the recursive call.
+            if len(curr_path) > 0 and curr_path[-1] == end_vertex:
+                curr_path.insert(0, current_vertex)
+                return
 
     # Function that intiates depth first search.
     # Input: The start and end vertex that will be used for the depth first search.

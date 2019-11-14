@@ -84,7 +84,7 @@ def display_graph(graph, draw_graph):
     graph.display()
     print()
     if draw_graph:
-        print("Graph based on the", graph_type, end = ":\n")
+        print("Graph based on the", graph_type, end = " will be stored in the current directory.\n")
         graph.draw()
         print()
 
@@ -248,7 +248,8 @@ def interpret_move(individual_move, move_before, start):
 # Input: A path of integers to be interpreted.
 # Output: None   
 def interpret_solutions(valid_path):
-    print("Solution:")
+    print("Path: ", valid_path)
+    print("\nSolution:")
     for i in range(1, len(valid_path)):
         is_start = False
         if i == 1:
@@ -270,12 +271,19 @@ def graph_configuration(graph_type, searching_alg_type):
     graph = create_graph(graph_type)
     display_graph(graph, True)
     if searching_alg_type == 1:
+        start_time = time.perf_counter()
         path = graph.breadth_first_search(0, 15)
+        end_time = time.perf_counter()
+        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
         interpret_solutions(path)
     else:
+        start_time = time.perf_counter()
         path = graph.depth_first_search(0, 15)
+        end_time = time.perf_counter()
+        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
         interpret_solutions(path)
     if not path is None:
+        print("The discovered path will be saved to the current directory.")
         set_of_edges = path_to_set(path)
         graph.draw_path(set_of_edges)
 
@@ -500,7 +508,7 @@ def bfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
 # Input: A list of graphs that whose edges will be deleted.
 #        edge_combos is a 2D list, that contains (source, destination, weight)
 #        edges in the buckets. edge_combos contains all the edges in the graphs.
-# Output: None, other than the runtime is dipslayed.            
+# Output: None, other than the runtime is displayed.            
 def delete_test(list_of_graphs, edge_combos, print_graphs):
     
     # Deletes all the edges from the graphs found in edge_combos.
@@ -515,6 +523,37 @@ def delete_test(list_of_graphs, edge_combos, print_graphs):
         if print_graphs:
             print("After deletion,", end = " ")
             display_graph(list_of_graphs[i], False)
+        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+
+# Function that tests the display furnction for the adjacency list, adjacency 
+# matrix, and edge list graphs.
+# Input: A list of graphs that will be displayed.
+# Output: None, other than the runtime is displayed.        
+def display_test(list_of_graphs):
+    
+    # Displays graphs.
+    for graph in list_of_graphs:  
+        print("Display for ", representation_to_text(graph.representation))
+        start_time = time.perf_counter()
+        graph.display()
+        end_time = time.perf_counter()
+
+        print("Runtime: %0.6f seconds\n"%(end_time - start_time))
+        
+# Function that tests the display furnction for the adjacency list, adjacency 
+# matrix, and edge list graphs.
+# Input: A list of graphs that will be displayed.
+# Output: None, other than the runtime is displayed.        
+def draw_test(list_of_graphs):
+    print("All graph drawings will be stored in the current directory.")
+    
+    # Displays graphs.
+    for graph in list_of_graphs:  
+        print("Drawing for ", representation_to_text(graph.representation))
+        start_time = time.perf_counter()
+        graph.draw()
+        end_time = time.perf_counter()
+
         print("Runtime: %0.6f seconds\n"%(end_time - start_time))
 
 # Function that initiates the tests for the graphs' edge insertions.
@@ -734,6 +773,73 @@ def run_automated_delete(graph_size, print_graphs):
         display_all_graphs(list_of_graphs[3])
     delete_test(list_of_graphs[3], edge_combos, print_graphs)
 
+# Function that initiates the tests for the graphs' display.
+# Input: The size of graphs to be created.
+# Output: None     
+def run_automated_display(graph_size):
+    
+    # Receives populated graphs.
+    list_of_graphs = generate_test_graphs(graph_size, 6)
+    
+    # Runs tests for undirected graphs.
+    print("\nUndirected Graphs Display")
+    print("________________________________________________")
+    display_test(list_of_graphs[0])
+    
+    # Runs tests for directed graphs.
+    print("\nDirected Graphs Display")
+    print("________________________________________________")
+    display_test(list_of_graphs[1])
+    
+    # Runs tests for weighted graphs.
+    print("\nWeighted Graphs Display")
+    print("________________________________________________")
+    display_test(list_of_graphs[2])
+     
+    # Runs tests for weighted, directed graphs.
+    print("\nWeighted and Directed Graphs Display")
+    print("________________________________________________")
+    display_test(list_of_graphs[3])
+
+# Function that initiates the tests for the graphs' drawings.
+# Input: The size of graphs to be created.
+# Output: None   
+def run_automated_draw(graph_size, display_graphs):
+    
+    # Receives populated graphs.
+    list_of_graphs = generate_test_graphs(graph_size, 7)
+    
+    # Runs tests for undirected graphs.
+    if display_graphs:
+        print("Graphs to be drawn:",end = "\n")
+        display_all_graphs(list_of_graphs[0])
+    print("\nUndirected Graphs Draw")
+    print("________________________________________________")
+    draw_test(list_of_graphs[0])
+    
+    # Runs tests for directed graphs.
+    if display_graphs:
+        print("Graphs to be drawn:",end = "\n")
+        display_all_graphs(list_of_graphs[0])
+    print("\nDirected Graphs Draw")
+    print("________________________________________________")
+    draw_test(list_of_graphs[1])
+    
+    # Runs tests for weighted graphs.
+    if display_graphs:
+        print("Graphs to be drawn:",end = "\n")
+        display_all_graphs(list_of_graphs[0])
+    print("\nWeighted Graphs Draw")
+    print("________________________________________________")
+    draw_test(list_of_graphs[2])
+     
+    # Runs tests for weighted, directed graphs.
+    if display_graphs:
+        print("Graphs to be drawn:",end = "\n")
+        display_all_graphs(list_of_graphs[0])
+    print("\nWeighted and Directed Graphs Draw")
+    print("________________________________________________")
+    draw_test(list_of_graphs[3])
 
 # Function that creates a list_of_graphs that contains four sublists of directed,
 # undirected, weigthed, and weighted, directed graphs. Based on the function
@@ -750,6 +856,8 @@ def run_automated_delete(graph_size, print_graphs):
 #                    populated graphs.
 # function_num == 4: used for breadth first search. Returns the populated graphs.
 # function_num == 5: used for depth first search. Returns the populated graphs.
+# function_num == 6: used for display. Returns the populated graphs.
+# function_num == 7: used for draw. Returns the populated graphs.
 def generate_test_graphs(graph_size, function_num):
     
     # Recieves combinations of valid edges.
@@ -773,7 +881,7 @@ def generate_test_graphs(graph_size, function_num):
     
     if function_num == 1:
         return list_of_graphs, edge_combos
-    
+
     # Populates all the graphs with the edges from edge_combos.
     for i in range(len(list_of_graphs)):
         for j in range(len(list_of_graphs[i])):
@@ -789,8 +897,8 @@ def generate_test_graphs(graph_size, function_num):
     
 # Function that allows users to select which graph function they would like
 # to test on selected graph sizes.
-#
-#
+# Input: None
+# Output: None
 def automated_test_setup():
     print("Select a function to test")
     print("1. Insert")
@@ -798,48 +906,70 @@ def automated_test_setup():
     print("3. Different Graphical Representations")
     print("4. Breadth First Search")
     print("5. Depth First Search")
+    print("6. Display")
+    print("7. Draw")
     
-    menu = int(input("Select 1 - 5: "))
-    if menu >= 1 and menu <= 5:
+    menu = int(input("Select 1 - 7: "))
+    print()
+    if menu >= 1 and menu <= 7:
         
-        # Prompts users to select the graph size to be tested.
-        print("Select a graph size")
-        print("1, 10 vertices and 15")
-        print("2. 500 vertices and 150 edges")
-        print("3. 1000 vertices and 750 edges")
-        print("4. 10000 vertices and 1500 edges")
-        size_selection = int(input("Select 1 - 4: "))
-        graph_size = [10, 500, 1000, 10000]
+        if menu >= 1 and menu <= 5:
+            # Prompts users to select the graph size to be tested.
+            print("Select a graph size")
+            print("1. 10 vertices and 15 edges")
+            print("2. 500 vertices and 150 edges")
+            print("3. 1000 vertices and 750 edges")
+            print("4. 10000 vertices and 1500 edges")
+            size_selection = int(input("Select 1 - 4: "))
+            print()
+            graph_size = [10, 500, 1000, 10000]
+        else:
+            print("Select a graph size")
+            print("1. 10 vertices and 15 edges")
+            print("2. 15 vertices and 22 edges")
+            print("3. 20 vertices and 30 edges")
+            print("4. 30 vertices and 45 edges")
+            size_selection = int(input("Select 1 - 4: "))
+            print()
+            graph_size = [10, 15, 20, 30]
         
         if size_selection >= 1 and size_selection <= 4:
             graph_size = graph_size[size_selection - 1]
             
-            # Determines if the user wants the graphs displayed.
-            print("Would you like to display the graph?")
-            print("1. Yes")
-            print("2. No")
-            print_graphs = int(input("Select 1 or 2: "))
-            
-            if print_graphs >= 1 and print_graphs <= 2:
-                if print_graphs == 1:
-                    print_graphs = True
-                else:
-                    print_graphs = False
+            if menu != 6:
+                # Determines if the user wants the graphs displayed.
+                print("Would you like to display the graph?")
+                print("1. Yes")
+                print("2. No")
+                print_graphs = int(input("Select 1 or 2: "))
+                print()
                 
-                # Calls the corresponding run_automated function based on the
-                # menu number selected.
-                if menu == 1:
-                    run_automated_insertion(graph_size, print_graphs)
-                elif menu == 2:
-                    run_automated_delete(graph_size, print_graphs)
-                elif menu == 3:
-                    run_automated_diff_rep(graph_size, print_graphs)
-                elif menu == 4:
-                    run_automated_bfs(graph_size, print_graphs)
+                if print_graphs >= 1 and print_graphs <= 2:
+                    if print_graphs == 1:
+                        print_graphs = True
+                    else:
+                        print_graphs = False
                 else:
-                    run_automated_dfs(graph_size, print_graphs)
+                    print("Invalid menu number. Program terminating.")
+                    return
+
+            # Calls the corresponding run_automated function based on the
+            # menu number selected.
+            if menu == 1:
+                run_automated_insertion(graph_size, print_graphs)
+            elif menu == 2:
+                run_automated_delete(graph_size, print_graphs)
+            elif menu == 3:
+                run_automated_diff_rep(graph_size, print_graphs)
+            elif menu == 4:
+                run_automated_bfs(graph_size, print_graphs)
+            elif menu == 5:
+                run_automated_dfs(graph_size, print_graphs)
+            elif menu == 6:
+                run_automated_display(graph_size)
             else:
-                print("Invalid menu number. Program terminating.")
+                run_automated_draw(graph_size, print_graphs)
+            
         else:
             print("Invalid menu number. Program terminating.")
     else:
@@ -942,7 +1072,7 @@ def custom_bfs(graph):
 
 # Function that allows users to perform depth first search on the current graph.
 # Input: The current customized graph.
-# Output: None, other than the runtime for the depth first search method.    
+# Output: None, other than the runtime for the depth first search function.    
 def custom_dfs(graph):
     
     # Retrieves the start and end vertex from the user.
@@ -959,6 +1089,32 @@ def custom_dfs(graph):
     print("Runtime: % 0.6f seconds\n" % (end_time - start_time))  
     if not path is None:
         graph.draw_path(path_to_set(path))
+
+# Function that displays the current graph.
+# Input: The current customized graph.
+# Output: None, other than the runtime for the display function.       
+def custom_display(graph):
+    print(representation_to_text(graph.representation), ":")
+    
+    # Displays graph.
+    start_time = time.perf_counter()
+    graph.display()
+    end_time = time.perf_counter()
+    
+    print("Runtime: % 0.6f seconds\n" % (end_time - start_time))
+    
+# Function that draws the current graph.
+# Input: The current customized graph.
+# Output: None, other than the runtime for the display function.       
+def custom_draw(graph):
+    print("The graph will be stored in the current directory.")
+    
+    # Draws graph.
+    start_time = time.perf_counter()
+    graph.draw()
+    end_time = time.perf_counter()
+    
+    print("Runtime: % 0.6f seconds\n" % (end_time - start_time))
 
 # Function that allows the user to select an operation to perform on the graph.
 # Input: None
@@ -1014,15 +1170,11 @@ def custom_graph_interface(graph):
             
         # Display the graph.
         elif menu == 6:
-            print(representation_to_text(graph.representation), ":")
-            graph.display()
-            print()
+            custom_display(graph)
             
         # Draw the graph.
         else:
-            print(representation_to_text(graph.representation), ":")
-            graph.draw()
-            print()
+            custom_draw(graph)
         menu = custom_graph_function_selection_menu()
         print()
 

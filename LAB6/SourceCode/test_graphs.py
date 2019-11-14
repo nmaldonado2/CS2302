@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 #         performed.
 def run_tests(graph_of_graphs):
     plt.close("all")  
+    print("All graphs will be stored in the current directory.")
     
     # Performs insertion, deletion, draw, and display for undirected graphs.
     print("Undirected, unweighted graph")

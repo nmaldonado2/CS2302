@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import graph_AL as al
 import graph_EL as el
+import datetime
 from scipy.interpolate import interp1d
 
 # Class Graph
@@ -139,8 +140,10 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close the graph when done to continue the program.")
-        plt.show(block = True)
+        fig.set_size_inches(15,9)
+        title = "am" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        plt.savefig(title, dpi = 200)
+#        plt.show(block=True)
     
     # Function that draws the adjacency matrix and highlights a path, from
     # set_of_edges in red.
@@ -192,8 +195,9 @@ class Graph:
              bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close graph when done to continue the program.")
-        plt.show(block = True)
+        fig.set_size_inches(15,9)
+        title = "am_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        plt.savefig(title, dpi = 200)
     
     # Populates a directed graph passed in as a parameter based off the edges in
     # the current graph.
@@ -204,9 +208,12 @@ class Graph:
         # Iterates through the entire adjacency matrix and only inserts edges
         # if the matrix does not have a negative one in the cell.
         for i in range(len(self.am)):
-                for j in range(len(self.am[i])):
+                for j in range(i, len(self.am[i])):
                     if self.am[i][j] != -1:
-                        graph.insert_edge(i, j, self.am[i][j])
+                        if graph.representation == "AL":
+                            graph.insert_edge(i, j, self.am[i][j])
+                        elif graph.representation == "EL":
+                            graph.el.append(el.Edge(i, j, self.am[i][j]))
     
     # Populates an undirected graph passed in as a parameter based off the edges
     # in the current graph.
@@ -218,9 +225,12 @@ class Graph:
         # only inserts edges if the matrix does not have a negative one in the
         # cell.
         for i in range(len(self.am)):
-                for j in range(i + 1):
+                for j in range(i, len(self.am)):
                     if self.am[i][j] != -1:
-                        graph.insert_edge(i, j, self.am[i][j])
+                        if graph.representation == "AL":
+                            graph.insert_edge(i, j, self.am[i][j])
+                        elif graph.representation == "EL":
+                            graph.el.append(el.Edge(i, j, self.am[i][j]))
     
     # Converts the current adjacency matrix into an edge list.
     # Input: None
@@ -233,7 +243,7 @@ class Graph:
             self.convert_directed_graph(edge_list)
         else:
             self.convert_undirected_graph(edge_list)
-        return edge_list
+        return edge_list    
     
     # Converts the current adjacency matrix into an adjacency matrix.
     # Input: None
@@ -254,6 +264,8 @@ class Graph:
             self.convert_undirected_graph(adj_list)
         return adj_list
     
+    
+    
     # Performs breadth first search on the current graph starting at start_vertex
     # and will terminate if a path to the end_vertex is found.
     # Input: The start and end vertex used in the breadth first search.
@@ -269,7 +281,9 @@ class Graph:
         # Creates a queue that will store the paths and the next vertex to be
         # visited. Discovered keeps track of the discovered vertices.
         discovered = [False for i in range(len(self.am))]
-        frontier_queue = [[start_vertex]]
+        discovered[start_vertex] = True
+        frontier_queue = [start_vertex]
+        path = np.zeros(len(self.am), dtype = np.int) - 1
         
         # Continues to iterate while the queue is not empty or until the end
         # vertex is not found.
@@ -277,20 +291,32 @@ class Graph:
             
             # Pops the path with the current vertex as the last most
             # element.
-            current_vertex_path = frontier_queue.pop(0)
+            current_vertex = frontier_queue.pop(0)
             
             # Returns the path if the end vertex is found.
-            if current_vertex_path[-1] == end_vertex:
-                return current_vertex_path
+            if current_vertex == end_vertex:
+                return self.interpret_path(path, current_vertex)
             
             # Pushes all adjacent vertices to the queue if the adjacent
             # vertex has not been discovered.  The adjacent vertex is appended
             # to the current_vertex path and is pushed.
-            for am_column in range(len(self.am[current_vertex_path[-1]])):
-                if self.am[current_vertex_path[-1]][am_column] != -1 and not discovered[am_column]:
+            for am_column in range(len(self.am[current_vertex])):
+                if self.am[current_vertex][am_column] != -1 and not discovered[am_column]:
                     discovered[am_column] = True
-                    frontier_queue.append(current_vertex_path + [am_column])
+                    frontier_queue.append(am_column)
+                    path[am_column] = current_vertex
         return []
+
+    # Function that traces a path that for each index has the previous vertex
+    # from the path created by BFS ending at current_vertex.
+    # Input: A path from BFS that has the previous vertex that came before
+    #        the vertex represented by the current vertex.  If there was not a
+    #        previous vertex, then -1 is located at the index.
+    # Output: A path to the current vertex from the origin created by BFS.
+    def interpret_path(self, path, current_vertex):
+        if path[current_vertex] == -1:
+            return [current_vertex]
+        return self.interpret_path(path, path[current_vertex]) + [current_vertex]
 
     # Recursive function that performs depth first search based on the current and
     # end vertex.
@@ -307,21 +333,20 @@ class Graph:
         
         # If the current_vertex has not been visisted, then a recursive call
         # is made for each adjacent vertex.
-        if not visited_vertices[current_vertex]:
-            visited_vertices[current_vertex] = True
+        visited_vertices[current_vertex] = True
             
-            # Only adds adajcecnt vertices if a negative one does not exist in the cell.
-            for am_column in range(len(self.am[current_vertex])):
-                if self.am[current_vertex][am_column] != -1:
-                    self.depth_first_search_recur(visited_vertices, 
-                                                  am_column, end_vertex, curr_path)
-                    
-                # Checks curr_path after each recursive call. If the last element
-                # has been found, the the current vertex is prepended and ends
-                # the recursive call.
-                if len(curr_path) > 0 and curr_path[-1] == end_vertex:
-                    curr_path.insert(0, current_vertex)
-                    return
+        # Only adds adajcecnt vertices if a negative one does not exist in the cell.
+        for am_column in range(len(self.am[current_vertex])):
+            if self.am[current_vertex][am_column] != -1 and not visited_vertices[am_column]:
+                self.depth_first_search_recur(visited_vertices, 
+                                              am_column, end_vertex, curr_path)
+                
+            # Checks curr_path after each recursive call. If the last element
+            # has been found, the the current vertex is prepended and ends
+            # the recursive call.
+            if len(curr_path) > 0 and curr_path[-1] == end_vertex:
+                curr_path.insert(0, current_vertex)
+                return
         
     # Function that intiates depth first search.
     # Input: The start and end vertex that will be used for the depth first search.

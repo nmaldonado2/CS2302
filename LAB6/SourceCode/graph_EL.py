@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import graph_AL as al
 import graph_AM as am
+import datetime
 from scipy.interpolate import interp1d
 
 # Class Edge
@@ -52,51 +53,116 @@ class Graph:
         self.weighted = weighted
         self.directed = directed
         self.representation = 'EL'
-    
+
+    # Function that inserts an edge into the edge list in order. The edges
+    # are ordered by the first vertex in ascending order and then for edges
+    # with the same first vertex, the edges are ordered by the second vertex.
+    # Input: The source vertex, destination vertex, weight, and
+    #        bounds of the current portion of the edge list being analyzed
+    #        denoted by start and end.
+    # Output: None
+    # Assume source is less than or equal to dest for undirected graphs.
+    def insert_edge_(self, source, dest, weight, start, end):
+        if len(self.el) == 0:
+            self.el.append(Edge(source, dest, weight))
+            return
+        if start >= end:
+            if source < self.el[start].source:
+                self.el.insert(start, Edge(source, dest, weight))
+            elif source > self.el[start].source:
+                if start == len(self.el) - 1:
+                    self.el.append(Edge(source, dest, weight))
+                else:  
+                    self.el.insert(start + 1, Edge(source, dest, weight))
+            else:
+                if dest < self.el[start].dest:
+                    self.el.insert(start, Edge(source, dest, weight))
+                elif dest > self.el[start].dest:
+                    if start == len(self.el) - 1:
+                        self.el.append(Edge(source, dest, weight))
+                    else:  
+                        self.el.insert(start + 1, Edge(source, dest, weight))
+                else:
+                    self.el[start].weight = weight
+            return
+        
+        mid = (start + end) // 2
+        if self.el[mid].source == source and self.el[mid].dest == dest:
+            self.el[mid].weight = weight
+            return
+        
+        if source < self.el[mid].source:
+            self.insert_edge_(source, dest, weight, start, mid - 1)
+        elif source > self.el[mid].source:
+            self.insert_edge_(source, dest, weight, mid + 1, end)
+        else:
+            if dest < self.el[mid].dest:
+                self.insert_edge_(source, dest, weight, start, mid - 1)
+            else:
+                self.insert_edge_(source, dest, weight, mid + 1, end)
+                
     # Function that inserts the edge between the source and dest by adding the
     # edge to the edge list.
-    # Input: The source, destination, and weight of the edge.
+    # Input: The source, destination, and weight of the edge. If the graph
+    #        is undirected and source is greater than the destination, then
+    #        the edge will be inserted as (destination, source) to preserve
+    #        the edge lists order as (min vertex value, max vertex value) for
+    #        undirected graphs.
     # Output: None.
-    def insert_edge(self,source,dest,weight=1):
+    def insert_edge(self, source, dest, weight = 1):
         
-        # Ensures that the source and dest are not out of bounds.
+        # Ensures that the source and dest are valid vertices.
         if source >= self.vertices or dest >= self.vertices or source < 0 or dest < 0:
             print("Error, vertex is out of range.")
-        
+            
         # Ensures that if the graph is not weighted then the weight must be 1.
         elif weight != 1 and not self.weighted:
-            print('Error, inserting weighted edge to unweighted graph')
-            
-        # Inserts an Edge object populated with the source, dest, and weight.
+            print('Error, inserting weighted edge to unweighted graph')   
+        
+        # Inserts edge.
         else:
-            self.el.append(Edge(source, dest, weight))
+            if self.directed:
+                self.insert_edge_(source, dest, weight, 0, len(self.el) - 1)
+            
+            # If the graph is undirected, then source and dest can also be reordered
+            # to dest and source.  The edge is created as (min, max) to preserve
+            # the order.
+            else:
+                self.insert_edge_(min(source, dest), max(source, dest), weight, 0, len(self.el) - 1)
     
-    # Helper function that deletes the edge between the source and dest.
-    # Input: The source and destination that form the edge.
-    # Output: Returns True if the edge was successfully removed. False otherwise.
-    def delete_edge_(self, source, dest):
-        i = 0
-        for edge in self.el:
-            
-            # If the edge's source and destination match source and destination, 
-            # the edge is removed.
-            if edge.source == source and edge.dest == dest:
-                self.el.pop(i)
-                return True
-            
-            # If the graph is not directed and the edge's destination and source
-            # match source and destination, then the edge is removed.
-            elif not self.directed and edge.dest == source and edge.source == dest:
-                self.el.pop(i)
-                return True
-            i += 1
-        return False
+    # Function that deletes the edge with source and destination from the edge
+    # list.
+    # Input: The source vertex, destination vertex, and bounds for the current
+    #        portion of the edge list analyzed.
+    # Output: A boolean that denotes whether the edge was successfully deleted.
+    def delete_edge_(self, source, dest, start, end):
+        if start > end:
+            return False
+        
+        mid = (start + end) // 2
+        
+        if source == self.el[mid].source and dest == self.el[mid].dest:
+            self.el.pop(mid)
+            return True
+        
+        if source < self.el[mid].source:
+            return self.delete_edge_(source, dest, start, mid - 1)
+        if source > self.el[mid].source:
+            return self.delete_edge_(source, dest, mid + 1, end)
+        
+        if dest < self.el[mid].dest:
+            return self.delete_edge_(source, dest, start, mid - 1)
+         
+        return self.delete_edge_(source, dest, mid + 1, end)
     
     # Function that deletes the edge between the source and dest.
     # Input: The source and destination that form the edge.
     # Output: None.
     def delete_edge(self, source, dest):
-        deleted = self.delete_edge_(source, dest)
+        if self.directed:
+            deleted = self.delete_edge_(source, dest, 0, len(self.el) - 1)
+        else:
+            deleted = self.delete_edge_(min(source, dest), max(source, dest), 0, len(self.el) - 1)
         if not deleted:
             print('Error, edge to be deleted was not found') 
             
@@ -151,8 +217,10 @@ class Graph:
             bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close the graph when done to continue the program.")
-        plt.show(block = True)
+        title = "el" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        fig.set_size_inches(15,9)
+        plt.savefig(title, dpi = 200)
+#    plt.show(block = True)
      
     # Function that draws the edge list and highlights a path, from set_of_edges
     # in red.
@@ -204,8 +272,9 @@ class Graph:
             bbox=dict(facecolor='w',boxstyle="circle"))
         ax.axis('off') 
         ax.set_aspect(1.0)
-        print("Please completely close graph when done to continue the program.")
-        plt.show(block = True)   
+        fig.set_size_inches(15,9)
+        title = "el_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+        plt.savefig(title, dpi = 200)  
      
     # Converts the current edge list into an edge list.
     # Input: None
@@ -238,7 +307,7 @@ class Graph:
     # Performs breadth first search on the current graph starting at start_vertex
     # and will terminate if a path to the end_vertex is found.
     # Input: The start and end vertex used in the breadth first search.
-    # Output: The path from the start vertex to the end vertex if it exists.    
+    # Output: The path from the start vertex to the end vertex if it exists.        
     def breadth_first_search(self, start_vertex, end_vertex):
         
         # Ensures that start_vertex and end_vertex are valid vertices.
@@ -249,36 +318,55 @@ class Graph:
         # Creates a queue that will store the paths and the next vertex to be
         # visited. Discovered keeps track of the discovered vertices.
         discovered = [False for i in range(self.vertices)]
-        frontier_queue = [[start_vertex]]
+        discovered[start_vertex] = True
+        frontier_queue = [start_vertex]
+        path = np.zeros(self.vertices, dtype = np.int) - 1
 
         # Continues to iterate while the queue is not empty or until the end
         # vertex is not found.
         while len(frontier_queue) > 0:
-            current_vertex_path = frontier_queue.pop(0)
+            current_vertex = frontier_queue.pop(0)
             
             # Pops the path with the current vertex as the last most element.
-            if current_vertex_path[-1] == end_vertex:
-                return current_vertex_path
+            if current_vertex == end_vertex:
+                return self.interpret_path(path, current_vertex)
             
             # Pushes all adjacent vertices to the queue if the adjacent
             # vertex has not been discovered.  The adjacent vertex is appended
             # to the current_vertex path and pushed.
-            for edge in self.el:
+            for i in range(len(self.el)):
+                
+                if not self.directed and self.el[i].source > current_vertex:
+                    break
                 
                 # If the edge's source equals the current vertex and the edge 
                 # destination has not been discovered, it is appended to the 
                 # current vertex path and pushed to the queue.
-                if edge.source == current_vertex_path[-1] and not discovered[edge.dest]:
-                    discovered[edge.dest] = True
-                    frontier_queue.append(current_vertex_path + [edge.dest])
+                if self.el[i].source == current_vertex and not discovered[self.el[i].dest]:
+                    discovered[self.el[i].dest] = True
+                    frontier_queue.append(self.el[i].dest)
+                    path[self.el[i].dest] = current_vertex
                     
                 # If the edge's destination equals the current vertex and the  
                 # edge's source has not been discovered, it is appended to the 
                 # current vertex path and pushed to the queue.
-                elif not self.directed and edge.dest == current_vertex_path[-1] and not discovered[edge.source]:
-                    discovered[edge.source] = True
-                    frontier_queue.append(current_vertex_path + [edge.source])
+                elif not self.directed and self.el[i].dest == current_vertex and not discovered[self.el[i].source]:
+                    discovered[self.el[i].source] = True
+                    frontier_queue.append(self.el[i].source)
+                    path[self.el[i].source] = current_vertex
+                
         return []
+    
+    # Function that traces a path that for each index has the previous vertex
+    # from the path created by BFS ending at current_vertex.
+    # Input: A path from BFS that has the previous vertex that came before
+    #        the vertex represented by the current vertex.  If there was not a
+    #        previous vertex, then -1 is located at the index.
+    # Output: A path to the current vertex from the origin created by BFS.
+    def interpret_path(self, path, current_vertex):
+        if path[current_vertex] == -1:
+            return [current_vertex]
+        return self.interpret_path(path, path[current_vertex]) + [current_vertex]
     
     # Recursive function that performs depth first search based on the current and
     # end vertex.
@@ -293,32 +381,37 @@ class Graph:
             curr_path.append(current_vertex)
             return
 
-        # If the current_vertex has not been visisted, then a recursive call
-        # is made with for each adjacent vertex.
-        if not visited_vertices[current_vertex]:
-            visited_vertices[current_vertex] = True
+        visited_vertices[current_vertex] = True
+            
+        # Since the edge list is ordered by (min vertex, max vertex),
+        # current_vertex's adjacent edges must be equal to or less than
+        # the current vertex.
 
-            for edge in self.el:
+        for i in range(len(self.el)):
+            
+            if not self.directed and self.el[i].source > current_vertex:
+                return
+            
+            # If the edge's source matches the current vertex a recursive
+            # call is made with the edge's destination.
+            if self.el[i].source == current_vertex and not visited_vertices[self.el[i].dest]:
+                self.depth_first_search_recur(visited_vertices, 
+                                          self.el[i].dest, end_vertex, curr_path)
                 
-                # If the edge's source matches the current vertex a recursive
-                # call is made with the edge's destination.
-                if edge.source == current_vertex:
-                    self.depth_first_search_recur(visited_vertices, 
-                                              edge.dest, end_vertex, curr_path)
-                    
-                # If the  graph is not directed and the edge's destination
-                # matches the current vertex a recursive call is made with the
-                # edge's source.
-                elif not self.directed and edge.dest == current_vertex:
-                    self.depth_first_search_recur(visited_vertices, 
-                                              edge.source, end_vertex, curr_path)
-                    
-                # Checks curr_path after each recursive call. If the last element
-                # has been found, the the current vertex is prepended and ends
-                # the recursive call.
-                if len(curr_path) > 0 and curr_path[-1] == end_vertex:
-                    curr_path.insert(0, current_vertex)
-                    return
+            # If the  graph is not directed and the edge's destination
+            # matches the current vertex a recursive call is made with the
+            # edge's source.
+            elif not self.directed and self.el[i].dest == current_vertex and not visited_vertices[self.el[i].source]:
+                self.depth_first_search_recur(visited_vertices, 
+                                          self.el[i].source, end_vertex, curr_path)
+                
+            # Checks curr_path after each recursive call. If the last element
+            # has been found, the the current vertex is prepended and ends
+            # the recursive call.
+            if len(curr_path) > 0 and curr_path[-1] == end_vertex:
+                curr_path.insert(0, current_vertex)
+                return
+            
     
     # Function that intiates depth first search.
     # Input: The start and end vertex that will be used for the depth first search.
