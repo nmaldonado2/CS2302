@@ -35,7 +35,6 @@ def create_graph(menu):
         graph = am.Graph(16)
     else:
         graph = el.Graph(16)
-    graph.insert_edge(0,1)
     graph.insert_edge(0,5)
     graph.insert_edge(2,7)
     graph.insert_edge(2,11)
@@ -46,7 +45,6 @@ def create_graph(menu):
     graph.insert_edge(8,13)
     graph.insert_edge(10,11)
     graph.insert_edge(10,15)
-    graph.insert_edge(14,15)
     
     return graph
 
@@ -238,6 +236,7 @@ def different_moves(individual_move, move_before):
 def interpret_move(individual_move, move_before, start):
     if start and move_before == "0000":
         print_start_end(move_before)
+        different_moves(individual_move, move_before)
     elif individual_move == "1111":
         print_start_end(individual_move)
     else:
@@ -476,10 +475,11 @@ def different_representations_test(list_of_graphs, print_graphs):
 # Input: A list_of_graphs that contains the graphs that will conduct depth first
 #        search.  The start_vertex and end_vertex determine where the search
 #        will start and terminate. The boolean print_paths determine whether 
-#        the paths will be printed.
+#        the paths will be printed. The boolean small_graph determines if the
+#        path will be drawn (For lab demos only and graphs with 10 vertices).
 # Output: None, other than the runtimes and graphs are displayed.
 # Assume that start_vertex and end_vertex are integers.
-def dfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
+def dfs_test(list_of_graphs, start_vertex, end_vertex, print_paths, small_graph):
     
     # Runs the tests for depth first search for each graph.
     for graph in list_of_graphs:
@@ -492,6 +492,8 @@ def dfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
         
         if print_paths:
             print("Path: ", path, "\n")
+            if small_graph and not path is None:
+                graph.draw_path(path_to_set(path))
         else:
             print()
 
@@ -500,10 +502,11 @@ def dfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
 # Input: A list_of_graphs that contains the graphs that will conduct breadth first
 #        search.  The start_vertex and end_vertex determine where the search
 #        will start and terminate. The boolean print_paths determine whether 
-#        the paths will be printed.
+#        the paths will be printed. The boolean small_graph determines if the
+#        path will be drawn (For lab demos only and graphs with 10 vertices).
 # Output: None, other than the runtimes and graphs are displayed.
 # Assume that start_vertex and end_vertex are integers.      
-def bfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
+def bfs_test(list_of_graphs, start_vertex, end_vertex, print_paths, small_graph):
     
     # Runs the tests for breadth first search for each graph.
     for graph in list_of_graphs:
@@ -516,6 +519,8 @@ def bfs_test(list_of_graphs, start_vertex, end_vertex, print_paths):
         
         if print_paths:
             print("Path: ", path, "\n")
+            if small_graph and not path is None:
+                graph.draw_path(path_to_set(path))
         else:
             print()
 
@@ -668,7 +673,7 @@ def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     
     print("For all DFS, start vertex = %d, end vertex = %d" % (start_vertex, end_vertex))
     if small_graph_selection and print_graphs:
-        print("A reference image of the graphs will be saved to the current directory")
+        print("Reference images of the graphs' paths will be saved to the current directory")
 
     # Runs tests for undirected graphs.
     print("\nUndirected Graphs DFS")
@@ -676,11 +681,7 @@ def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[0])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[0][0].draw()
-    dfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs)
+    dfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs, small_graph_selection)
     
     # Runs tests for directed graphs.
     print("\nDirected Graphs DFS")
@@ -688,11 +689,7 @@ def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[1])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[1][0].draw()
-    dfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs)
+    dfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs, small_graph_selection)
     
     # Runs tests for weighted graphs.
     print("\nWeighted Graphs DFS")
@@ -700,11 +697,7 @@ def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[2])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[2][0].draw()
-    dfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs)
+    dfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs, small_graph_selection)
      
     # Runs tests for directed, weighted graphs.
     print("\nWeighted and Directed Graphs DFS")
@@ -712,11 +705,7 @@ def run_automated_dfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[3])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[3][0].draw()
-    dfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs)
+    dfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs, small_graph_selection)
 
 # Function that initiates the tests for breadth first search.
 # Input: The size of graphs to be created and a boolean that determines whether
@@ -736,7 +725,7 @@ def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     print("For all BFS, start vertex = %d, end vertex = %d" % (start_vertex, end_vertex))
 
     if small_graph_selection and print_graphs:
-        print("A reference image of the graphs will be saved to the current directory")
+        print("Reference images of the graphs' paths will be saved to the current directory")
     
     # Runs tests for undirected graphs.
     print("\nUndirected Graphs BFS")
@@ -744,11 +733,7 @@ def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[0])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[0][0].draw()
-    bfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs)
+    bfs_test(list_of_graphs[0], start_vertex, end_vertex, print_graphs, small_graph_selection)
     
     # Runs tests for directed graphs.
     print("\nDirected Graphs BFS")
@@ -756,11 +741,7 @@ def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[1])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[1][0].draw()
-    bfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs)
+    bfs_test(list_of_graphs[1], start_vertex, end_vertex, print_graphs, small_graph_selection)
     
     # Runs tests for weighted graphs.
     print("\nWeighted Graphs BFS")
@@ -768,11 +749,7 @@ def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[2])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[2][0].draw()
-    bfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs)
+    bfs_test(list_of_graphs[2], start_vertex, end_vertex, print_graphs, small_graph_selection)
      
     # Runs tests for weighted, directed graphs.
     print("\nWeighted and Directed Graphs BFS")
@@ -780,11 +757,7 @@ def run_automated_bfs(graph_size, print_graphs, small_graph_selection):
     if print_graphs:
         print("Current Graphs:",end = "\n")
         display_all_graphs(list_of_graphs[3])
-        
-        # For the lab demos, prints the graphs with only 10 vertices for reference.
-        if small_graph_selection:
-            list_of_graphs[3][0].draw()
-    bfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs)
+    bfs_test(list_of_graphs[3], start_vertex, end_vertex, print_graphs, small_graph_selection)
 
 # Function that initiates the tests for the graphs' edge deletions.
 # Input: The size of graphs to be created and a boolean that determines whether
