@@ -59,7 +59,7 @@ def path_to_set(path):
     for i in range(len(path) - 1):
         set_of_edges.add((path[i], path[i + 1]))
     if len(path) == 1:
-        set_of_edges.add((path[i], path[i]))
+        set_of_edges.add((path[0], path[0]))
     return set_of_edges
 
 # Function that returns the graph type based on the graph representation.
@@ -1127,7 +1127,8 @@ def custom_bfs(graph):
     print("Path: ", path)
     print("Runtime: % 0.6f seconds\n" % (end_time - start_time))  
     
-    if not path is None:
+    if not path is None and len(path) > 0:
+        print("The graph with the path will be stored in the current directory.\n")
         graph.draw_path(path_to_set(path))
 
 # Function that allows users to perform depth first search on the current graph.
@@ -1147,7 +1148,8 @@ def custom_dfs(graph):
     
     print("Path:", path)
     print("Runtime: % 0.6f seconds\n" % (end_time - start_time))  
-    if not path is None:
+    if not path is None and len(path) > 0:
+        print("The graph with the path will be stored in the current directory.\n")
         graph.draw_path(path_to_set(path))
 
 # Function that displays the current graph.
