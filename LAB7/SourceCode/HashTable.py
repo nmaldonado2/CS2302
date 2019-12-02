@@ -1,16 +1,13 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: November 14, 2019
-# Assignment: Lab 6 - Graphs
+# Date of Last Modification: November 29, 2019
+# Assignment: Lab 7 - Algorithm Design Techniques
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab was to represent graphs through adjacency
-#          lists, adjacency matrices, and edge lists. These grahical
-#          representations were then used to solve the riddle concerning a fox,
-#          chicken, sack of grain, and person by using breadth first search and
-#          depth first search.  This file provides the class for a hash table
-#          with chaining. This hash table with chaining was used to store valid
-#          edges that would later be used to populate a graph.
+# Purpose: The purpose of this lab was to verify if a Hamiltonian cycle exists
+#          using randomization or identify if a Hamiltonian cycle exists using
+#           randomization. The hash table was used to store edges to ensure
+#           that duplicates were not used and to keep track of the edges.
 
 # Class HashTableChain
 # Attributes: 2D list of buckets.
@@ -24,63 +21,102 @@ class HashTableChain(object):
     def __init__(self,size):  
         self.bucket = [[] for i in range(size)]
      
-    # Hash function that maps k to the based on the length of bucket.
+    # Hash function that maps element to the based on the length of bucket.
     # Input: The value to be hashed.
-    # Output: The index where k should be hashed to.
-    def h(self,k):
-        return k%len(self.bucket)    
+    # Output: The index where element should be hashed to.
+    def h(self, element):
+        return element%len(self.bucket)    
             
-    # Inserts k into the hash table.
-    # Input: k, in the format of (source, destination, weight)
+    # Inserts edge into the hash table.
+    # Input: edge, in the format of (source, destination, weight)
     # Output: 1 if the insertion was successful or -1 otherwise.
-    def insert(self,k):
+    def insert(self, edge):
         
-        # Inserts k in appropriate bucket (list) 
-        # Does nothing if k is already in the table
-        b1 = self.h(k[0])
-        b2 = self.h(k[1])
+        # Inserts edge in appropriate bucket (list) 
+        # Does nothing if edge is already in the table.
+        b1 = self.h(edge[0])
+        b2 = self.h(edge[1])
         already_exists = False
         for item in self.bucket[b1]:
-            if item[0] == k[0] and item[1] == k[1]:
+            if item[0] == edge[0] and item[1] == edge[1]:
                 already_exists = True
         for item in self.bucket[b2]:
-            if item[0] == k[1] and item[1] == k[0]:
+            if item[0] == edge[1] and item[1] == edge[0]:
                 already_exists = True
         if not already_exists:
-            self.bucket[b1].append(k)
+            self.bucket[b1].append(edge)
             return 1
         return -1
     
-    def insert_double(self, k):
+    # Inserts edge into the hash table.
+    # Input: edge, in the format of (source, destination, weight) will be hashed
+    #        as long as it does not already exist in the hash table. Edge will
+    #        also be hashed as (destination, source, and weight).
+    # Output: 1 is returned if the inerstion was successful. Otherwise -1 is
+    #         returned.
+    def insert_double(self, edge):
         
-        # Inserts k in appropriate bucket (list) 
-        # Does nothing if k is already in the table
-        b1 = self.h(k[0])
-        b2 = self.h(k[1])
+        # Inserts edge in appropriate bucket (list) 
+        # Does nothing if edge is already in the table
+        b1 = self.h(edge[0])
+        b2 = self.h(edge[1])
         for item in self.bucket[b1]:
-            if item[0] == k[0] and item[1] == k[1]:
+            if item[0] == edge[0] and item[1] == edge[1]:
                 return -1
         for item in self.bucket[b2]:
-            if item[0] == k[1] and item[1] == k[0]:
+            if item[0] == edge[1] and item[1] == edge[0]:
                 return -1
 
-        self.bucket[b1].append(k)
-        self.bucket[b2].append([k[1], k[0], k[2]])
+        self.bucket[b1].append(edge)
+        self.bucket[b2].append([edge[1], edge[0], edge[2]])
         return 1
-    
-    def find(self, source, dest):
-        b1 = self.h(source)
-        b2 = self.h(dest)
+            
+    # Inserts a word based on the string length into the hash table.
+    # Input: Word to be hashed based on the string length.
+    # Output: None
+    # Assume that the word has not already been inserted.  However, based
+    # on the hash table's implementation, duplicates will not affect the 
+    # random selection of words of the same length.
+    def insert_word(self, word):
+        
+        # Inserts word in appropriate bucket (list) 
+        b = self.h(len(word))
+        self.bucket[b].append(word)
 
-        for item in self.bucket[b1]:
-            if item[0] == source and item[1] == dest:
-                return True
-        for item in self.bucket[b2]:
-            if item[0] == dest and item[1] == source:
-                return True
-        return False
+    # Counts the number of elements in each bucket which represent the number
+    # of edges. If a bucket does not have two elements, False is returned.
+    # Input: None
+    # Output: Returns true if all buckets have two elements. False is otherwise
+    #         returned.
+    def correct_num_edges(self):
+        for bucket in self.bucket:
+            if len(bucket) != 2:
+                return False
+        return True
     
-    def display(self):
-        for i in self.bucket:
-            for element in i:
-                print(element)
+    # Formats the elements in each bucket to demonstrate a cycle of edges.
+    # Input: None
+    # Output: The cycle of edges.
+    # Assume that the buckets contain a hamiltonian cycle in which all buckets
+    # have exactly two elements and all the edges are double hashed and connected.
+    def format_elements(self):
+        prev_vertex = 0
+        curr_vertex = self.bucket[0][1][1]
+        
+        # Assume each bucket has two elements
+        cycle = [[self.bucket[0][0][1], 0],[0, curr_vertex]]
+        
+        # Builds the cycle until it contains as many edges as vertices.
+        while len(cycle) < len(self.bucket):
+            
+            # If the adjacent edge of the current vertex is not the previously
+            # added vertex, then the edge is appended to the cycle, previous
+            # is updated to the current vertex, and the next current vertex
+            # is evaluated.
+            for element in self.bucket[curr_vertex]:
+                if element[1] != prev_vertex:
+                    cycle.append([curr_vertex, element[1]])
+                    prev_vertex = curr_vertex
+                    curr_vertex = element[1]
+                    break
+        return cycle

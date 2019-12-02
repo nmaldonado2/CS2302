@@ -1,32 +1,30 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: November 14, 2019
-# Assignment: Lab 6 - Graphs
+# Date of Last Modification: November 29, 2019
+# Assignment: Lab 7 - Algorithm Design Techniques
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
 # TA: Anindita Nath
-# Purpose: The purpose of this lab ws to represent graphs through adjacency
-#          lists, adjacency matrices, and edge lists. These grahical
-#          representations were then used to solve the riddle concerning a fox,
-#          chicken, sack of grain, and person by using breadth first search and
-#          depth first search.  This file provides the class for the adjacency
-#          matrix. Functions included with the class are insert edge, delete
-#          edge, draw, display, breadth first search, depth first search,
-#          draw path, and convert to other graph representations.
+# Purpose: The purpose of this lab was to verify if a Hamiltonian cycle exists
+#          using randomization or identify if a Hamiltonian cycle exists using
+#           randomization.  Although the generalized randomization algorithm
+#          is instituted in the main program, this class contains the randomization
+#          and backtracking functions to compare the analysis between the 
+#          different graphical representations.
 
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 from scipy.interpolate import interp1d
 import DisjointSetForest as djsf
-import HashTable as htc
+import HashTable as ht
 import random
 
 # Class Graph
 # Attributes: an adjacency matrix, a boolean that represents if the graph is
 #             weighted, a boolean that represents if the graph is directed,
 #             and a string representation of the graph.
-# Behaviours: insert_edge, delete_edge, display, draw, as_AM, as_AL, as_EL, 
-#             draw_path, breadth_first_search, and depth_first_search.
+# Behaviours: insert_edge, delete_edge, display, draw, randomized_hamiltonian,
+#              and backtracking_hamiltonian.  
 class Graph:
     
     # Provided by the instructor
@@ -148,218 +146,80 @@ class Graph:
         plt.savefig(title, dpi = 200)
         plt.ioff()
     
-    # Function that draws the adjacency matrix and highlights a path, from
-    # set_of_edges in red.
-    # Input: A set of edges which represent the path to be highlighted.
-    # Output: None. 
-    def draw_path(self, set_of_edges):
-        scale = 30
-        fig, ax = plt.subplots()
-        
-        # Iterates through the adjacnecy matrix and plots the corresponding
-        # vertices and edges.
-        for i in range(len(self.am)):
-            for j in range(len(self.am[i])):
-                
-                # If an edge exists and it is in the set of edges, then its
-                # line color is assigned to red.
-                if self.am[i][j] != -1:
-                    if set_of_edges.find(i, j) or set_of_edges.find(j, i):
-                        line_color = "r"
-                        
-                    # Otherwise, the line color defaults to black.
-                    else:
-                        line_color = "k"
-                    d,w = j, self.am[i][j]
-                    if self.directed or d>i:
-                        x = np.linspace(i*scale,d*scale)
-                        x0 = np.linspace(i*scale,d*scale,num=5)
-                        diff = np.abs(d-i)
-                        if diff == 1:
-                            y0 = [0,0,0,0,0]
-                        else:
-                            y0 = [0,-6*diff,-8*diff,-6*diff,0]
-                        f = interp1d(x0, y0, kind='cubic')
-                        y = f(x)
-                        s = np.sign(i-d)
-                        ax.plot(x,s*y,linewidth=1,color=line_color)
-                        if self.directed:
-                            xd = [x0[2]+2*s,x0[2],x0[2]+2*s]
-                            yd = [y0[2]-1,y0[2],y0[2]+1]
-                            yd = [y*s for y in yd]
-                            ax.plot(xd,yd,linewidth=1,color=line_color)
-                        if self.weighted:
-                            xd = [x0[2]+2*s,x0[2],x0[2]+2*s]
-                            yd = [y0[2]-1,y0[2],y0[2]+1]
-                            yd = [y*s for y in yd]
-                            ax.text(xd[2]-s*2,yd[2]+3*s, str(w), size=12,ha="center", va="center")
-            ax.plot([i*scale,i*scale],[0,0],linewidth=1,color='k')        
-            ax.text(i*scale,0, str(i), size=20,ha="center", va="center",
-             bbox=dict(facecolor='w',boxstyle="circle"))
-        ax.axis('off') 
-        ax.set_aspect(1.0)
-        
-        # Saves graph as a .png.
-        fig.set_size_inches(15,9)
-        title = "am_path" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
-        plt.savefig(title, dpi = 200)
-        plt.ioff()
-    
-    def is_path_connected(self, subset_of_edges):
-        forest = djsf.DSF(len(self.am))
-        forest.edges_to_disjoint_set_forest(subset_of_edges)
-        num_roots = 0
-        for vertex in forest.parent:
-            if vertex == -1:
-                num_roots += 1
-            if num_roots == 2:
-                return False
-        return num_roots == 1
-    
-    def correct_num_in_degrees(self, in_degrees):
-        for degree in in_degrees:
-            if degree != 2:
-                return False
-        return True
-
-#    def generate_random_subset(self):
-#        num_vertices = len(self.am)
-#        subset_of_edges = htc.HashTableChain(len(self.am))
-#        num_in_degrees = np.zeros(len(self.am), dtype = np.int)
-#        new_subset_graph = Graph(len(self.am), weighted = self.weighted)
-#        
-#        while num_vertices > 0:
-#            vertex_one = random.randint(0, len(self.am) - 1)
-#            vertex_two = random.randint(0, len(self.am) - 1)
-#            
-#            random_edge = [vertex_one, vertex_two, self.am[vertex_one][vertex_two]]
-#
-#            if self.am[vertex_one][vertex_two] != -1 and subset_of_edges.insert(random_edge) == 1:
-#                if num_in_degrees[random_edge[0]] >= 2 or num_in_degrees[random_edge[1]] >= 2:
-#                    return None, None, None
-#                num_in_degrees[random_edge[0]] += 1
-#                num_in_degrees[random_edge[1]] += 1
-#                
-#                if self.weighted:
-#                    new_subset_graph.insert_edge(random_edge[0], random_edge[1], random_edge[2])
-#                else:
-#                    new_subset_graph.insert_edge(random_edge[0], random_edge[1])
-#                
-#                num_vertices -= 1    
-#        return new_subset_graph, subset_of_edges, num_in_degrees, 
-#            
-#            
-#    def randomized_hamiltonian(self, test_trials = 500):
-#        for i in range(test_trials):
-#            subset_graph, subset_of_edges, in_degrees = self.generate_random_subset()
-#            
-#            if not subset_graph == None:
-#                if self.correct_num_in_degrees(in_degrees) and self.is_path_connected(subset_of_edges.bucket):
-#                    return subset_graph, subset_of_edges
-#        return None, None
-        
+    # Function that generates a random subset graph of V edges where V is the
+    # number of vertices. Assume the graph has at least V edges.
+    # Input: None
+    # Output: If the subset graph has no more than two edges per vertex and at
+    #         a maximum only contains a cycle connecting the first and last
+    #         vertex, then the populated adjacency matrix graph is returned and
+    #         a hash table with the edges. Otherwise None is returned.
+    # For undirected graphs only. Assume the graph has at least V edges.
     def generate_random_subset(self):
         num_vertices = len(self.am)
-        
-        edges_hash_table = htc.HashTableChain(len(self.am))
         forest = djsf.DSF(len(self.am))
-        
-        num_in_degrees = np.zeros(len(self.am), dtype = np.int)
+        edges_hash_table = ht.HashTableChain(len(self.am))
         subset_graph = Graph(len(self.am), weighted = self.weighted)
         
+        # Continues to populate the adjacency matrix with random edges as long as
+        # the number of edges is less than the number of vertices.
         while num_vertices > 0:
             vertex_one = random.randint(0, len(self.am) - 1)
             vertex_two = random.randint(0, len(self.am) - 1)
+            edge_to_add = [vertex_one, vertex_two, self.am[vertex_one][vertex_two]]
             
-            random_edge = [vertex_one, vertex_two, self.am[vertex_one][vertex_two]]
-            
-            if self.am[vertex_one][vertex_two] != -1 and edges_hash_table.insert(random_edge) == 1:
+            # Ensures that the random edge has not already been inserted into the subgraph.
+            if self.am[vertex_one][vertex_two] != -1 and edges_hash_table.insert_double(edge_to_add) == 1:
+               
+                # If the number of indegrees for the edges is greater
+                # than two, then the graph is not a Hamiltonian cycle.
+                if len(edges_hash_table.bucket[vertex_one]) > 2 or len(edges_hash_table.bucket[vertex_two]) > 2:
+                    return None, None
                 
                 # If the edges create a cycle and the expected amount of edges have
-                # not been reached, then the subset is not a hamiltonian path.
-                if forest.union(random_edge[0], random_edge[1]) == -1:
+                # not been reached, then the subset is not a Hamiltonian cycle.
+                if forest.union(vertex_one, vertex_two) == 0:
                     if num_vertices > 1:
-                        return None, None, None
+                        return None, None
+
                 
-                if num_in_degrees[random_edge[0]] >= 2 or num_in_degrees[random_edge[1]] >= 2:
-                    return None, None, None
-                num_in_degrees[random_edge[0]] += 1
-                num_in_degrees[random_edge[1]] += 1
-                
-                subset_graph.insert_edge(random_edge[0], random_edge[1], random_edge[2])
+                subset_graph.insert_edge(edge_to_add[0], edge_to_add[1], edge_to_add[2])
                 num_vertices -= 1    
-                    
-        subset_edges = subset_graph.am_to_cycle()
-        return subset_graph, subset_edges, num_in_degrees, 
+        return subset_graph, edges_hash_table
     
-    def am_to_cycle(self):
-        prev_vertex = 0
-        curr_vertex = self.am[0][1].dest
-        cycle = [[self.al[0][0].dest, 0],[0, curr_vertex]]
-        
-        am_column = 0
-        while len(cycle) < 2:
-            if self.am[0][am_column] != -1:
-                if len(cycle) == 0:
-                    cycle.append(am_column, 0)
-                else:
-                    cycle.append(0, am_column)
-        
-        while len(cycle) < len(self.al):
-            for edge in self.al[curr_vertex]:
-                if edge.dest != prev_vertex:
-                    cycle.append([curr_vertex, edge.dest])
-                    prev_vertex = curr_vertex
-                    curr_vertex = edge.dest
-                    break
-        return cycle
-                         
+    # For testing purposes only. For the assigned randomized algorithm, view
+    # the NicholeMaldonado.py file.
+    # Function that checks random subsets of a graph to determine if the graph
+    # contains a Hamiltonian cycle.
+    # Input: The number of trials which is defaulted to 1000.
+    # Output: The subset graph conatining the Hamiltonian cycle, if it exists,
+    #         and a list of the edges. Otherwise, None, None is returned.
+    # Assume the graph is undirected and has at least V number of edges where
+    # V is the number of vertices.
     def randomized_hamiltonian(self, test_trials = 1000):
         for i in range(test_trials):
-            subset_graph, subset_of_edges, in_degrees = self.generate_random_subset()
             
+            # Generates a random subset.
+            subset_graph, edges_hash_table = self.generate_random_subset()
+            
+            # Checks if the subset graph contains a Hamiltonian cycle.
             if not subset_graph is None:
-                if self.correct_num_in_degrees(in_degrees):
-                    return subset_graph, subset_of_edges
+                if edges_hash_table.correct_num_edges():
+                    return subset_graph, edges_hash_table.format_elements()
         return None, None
     
-#    def find_edge(self, source, target):
-#        for edge in self.am[column]:
-#            if edge.dest == target:
-#                return True
-#        return False
-    
-#    def backtracking_hamiltonian_recur(self, curr_vertex, visited, forest, num_seen = 1):
-#        visited[curr_vertex] = True
-#
-#        if num_seen == len(self.am):
-#            if self.am[curr_vertex][0] != -1:
-#                return [0]
-#            return None
-#        
-#        for column in range(len(self.am[curr_vertex])):
-#            if self.am[curr_vertex][column] != -1:
-#                if not visited[column] and forest.union(curr_vertex, column) == 1:
-#                    subset = self.backtracking_hamiltonian_recur(column, visited, forest, num_seen + 1)
-#                    
-#                    if subset != None:
-#                        subset.append(column)
-#                        return subset
-#                    forest.parent[column] = -1
-#                    visited[column] = False
-#        return None
-#    
-#    def backtracking_hamiltonian(self):
-#        visited = [False for i in range(len(self.am))]
-#        forest = djsf.DSF(len(self.am))
-#        
-#        subset = self.backtracking_hamiltonian_recur(0, visited, forest)
-#        if not subset is None:
-#            subset.append(0)
-#        print(subset)
-#        return subset
-        
+    # Function that uses backtracking to determine if a Hamiltonian cycle exists.
+    # Input: The current vertex being evaluated, the disjoint set forest, the
+    #        original starting vertex, and the number of vertices evaluated.
+    # Output: A subset graph containing a Hamiltonian cycle, if it exists, and
+    #         a list of the edges. Otherwise, None, None is returned, signifying
+    #         that the backtracking needs to continue. None, -1 can also be
+    #         returned, signifying that a Hamiltonian cycle cannot exist because
+    #         a vertex with one edge was found.
     def backtracking_hamiltonian_recur(self, curr_vertex, forest, start_vertex, num_seen = 1):
+        
+        # If num_seen is greater than or equalt to the number of vertices, then
+        # the subset graph is created if an edge exists between the start and
+        # current vertex. Otherwise None, None is returned.
         if num_seen >= len(self.am):
             if self.am[curr_vertex][start_vertex] != -1:
                 subset_graph = Graph(len(self.am), self.weighted, self.directed)
@@ -367,19 +227,50 @@ class Graph:
                 return [[start_vertex, curr_vertex]], subset_graph
             return None, None
         
+        # Iterates through adjacent edges and makes recursive calls for unvisited
+        # vertices.
+        num_adjacent = 0
         for column in range(len(self.am[curr_vertex])):
+
             if self.am[curr_vertex][column] != -1:
+                if curr_vertex != column:
+                    num_adjacent += 1
+                    
+                # If the current edge has not been visited and does not make a 
+                # cycle then a recursive call is made.
                 if forest.parent[column] == -1 and forest.union(curr_vertex, column) == 1:
                     subset, subset_graph = self.backtracking_hamiltonian_recur(
                             column, forest, start_vertex, num_seen + 1)
                     
+                    # If the subset is not None, then a Hamiltonian cycle has been
+                    # found, so the current edge is appended.
                     if subset != None:
                         subset.append([column, curr_vertex])
                         subset_graph.insert_edge(column, curr_vertex, self.am[curr_vertex][column])
                         return subset, subset_graph
+                    
+                    # If the subset_graph is a -1, then a vertex with one edge has
+                    # been found, so a Hamiltonian cycle cannot exist.
+                    if subset_graph == -1:
+                        return subset, subset_graph
                     forest.parent[column] = -1
+                    
+        # Once the entire row has been iterated through, if only one adjacent
+        # edge exists then None, -1 is returned symbolizing that a Hamiltonian
+        # cycle does not exist.
+        if not self.directed and num_adjacent == 1:
+            return None, -1
         return None, None
     
+    # Function that intitates the backtracking recursive function to find a 
+    # Hamiltonian cycle.
+    # Input: The starting vertex of the search for the Hamiltonian cycle.
+    # Output: None, None if a Hamiltonian cycle was not found. Otherwise, the
+    #         the adjacency matrix representing the Hamiltonian cycle and the
+    #         subset graph is returned.
     def backtracking_hamiltonian(self, start_vertex):
         forest = djsf.DSF(len(self.am))
-        return self.backtracking_hamiltonian_recur(start_vertex, forest, start_vertex)
+        subset, subset_graph = self.backtracking_hamiltonian_recur(start_vertex, forest, start_vertex)
+        if subset is None:
+            return None, None
+        return subset, subset_graph
