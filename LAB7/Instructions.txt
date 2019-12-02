@@ -1,0 +1,23 @@
+The main program is implemented in NicholeMaldonado_Lab5.py. The HashTableChainClass.py, HashTableLP.py, and WordEmbedding.py
+are necessary for the HashTableChain, HashTableLP, and WordEmbedding objects used in the program.
+
+For the program, the user must first enter the path of the file that contains the word embeddings. Please enusre that
+you include the full directory with the txt file included. For example, valid input would be:
+/Users/nichole_maldonado/Desktop/glove.6B.50d.txt
+
+With the file path successfully obtained, the user can then determine if they want to find the similairities of pairs
+from a file (enter 1) or enter a pair of words to compare (enter 2). If the user wants to find the similairies of pairs
+from a file, then the user must enter the file path of the file.
+
+The user can then select the hash function that will be used and the load factor.  If the user selects the hash table
+with chaining and hash function 1 through 4, then they are given the option to use linear insertion or binary insertion which
+inserts the WordEmbedding objects in order.
+
+The user is also given the option to enter the number of valid words the file with the word embeddings contains or allow
+the computer to calculate the number of valid words.  Valid words are words with only letters.  If the user enters fewer lines
+then the file contains, then the number of WordEmbedding inserted will stop after the load factor is reached. If unsure,
+please let the program count the number of valid words.
+
+After the hash table is populated, searches for the pairs and their computations will occur. Note that after all 
+searches have been made and the entire file with the word pairs has been read, the program will terminate.  
+If the user entered pairs, the program will also terminate after finding the pairs and their similarity.
