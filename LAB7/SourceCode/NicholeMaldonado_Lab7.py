@@ -207,13 +207,7 @@ def randomization_test(list_of_graphs, print_edges, small_graph):
         subset_graph, subset_edges = graph.randomized_hamiltonian()
         end_time = time.perf_counter()
         print("Runtime: %0.6f seconds"%(end_time - start_time))
-        
-        print("Found cycle: ", end = "")
-        if not subset_graph is None:
-            print("True")
-        else:
-            print("False")
-        
+         
         if print_edges:
             print("Edges:", subset_edges, "\n")
 
@@ -221,6 +215,11 @@ def randomization_test(list_of_graphs, print_edges, small_graph):
                 print("The subset graph will be stored in the current directory.\n")
                 subset_graph.draw()
         else:
+            print("Found cycle: ", end = "")
+            if not subset_graph is None:
+                print("True")
+            else:
+                print("False")
             print()
             
 # Runs test for the generalized randomization algorithm.
@@ -238,12 +237,6 @@ def randomization_generalized_test(V, E, print_edges, small_graph):
     end_time = time.perf_counter()
     print("Runtime: %0.6f seconds"%(end_time - start_time))
     
-    print("Found cycle: ", end = "")
-    if not subset_graph is None:
-        print("True")
-    else:
-        print("False")
-    
     # Prints the edges that create a cycle.
     if print_edges:
         print("Edges:", subset_edges, "\n")
@@ -252,6 +245,11 @@ def randomization_generalized_test(V, E, print_edges, small_graph):
             print("The subset graph will be stored in the current directory.\n")
             subset_graph.draw()
     else:
+        print("Found cycle: ", end = "")
+        if not subset_graph is None:
+            print("True")
+        else:
+            print("False")
         print()
 
 # Populates a hash table with all the words found in the provided word file.
