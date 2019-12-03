@@ -1,23 +1,27 @@
-The main program is implemented in NicholeMaldonado_Lab5.py. The HashTableChainClass.py, HashTableLP.py, and WordEmbedding.py
-are necessary for the HashTableChain, HashTableLP, and WordEmbedding objects used in the program.
+The main program is implemented in NicholeMaldonado_Lab7.py. The HashTable.py, graph_AL, graph_AM.py, graph_EL.py,
+and DisjointSetForest.py are necessary for the HashTableChain, adjacency list, adjcency matrix, edge list, and
+DSF objects used in the program.
 
-For the program, the user must first enter the path of the file that contains the word embeddings. Please enusre that
-you include the full directory with the txt file included. For example, valid input would be:
-/Users/nichole_maldonado/Desktop/glove.6B.50d.txt
+For the program, the user can choose one of three options:
 
-With the file path successfully obtained, the user can then determine if they want to find the similairities of pairs
-from a file (enter 1) or enter a pair of words to compare (enter 2). If the user wants to find the similairies of pairs
-from a file, then the user must enter the file path of the file.
+1) Create your own tests for backtracking or randomization - This allows the user to select the number of vertices
+  that they want their graph to contain along with the edge factor which will be used to compute the number of edges.
+  Then users can determine if they want to use randomization or backtracking to find a Hamiltonian cycle. For the 
+  randomization, the user can choose the generalized randomization, which follows the psuedocode provided, or the graph 
+  implementation which allows users to test an adjacency list, edge list, or adjacency matrix.
 
-The user can then select the hash function that will be used and the load factor.  If the user selects the hash table
-with chaining and hash function 1 through 4, then they are given the option to use linear insertion or binary insertion which
-inserts the WordEmbedding objects in order.
-
-The user is also given the option to enter the number of valid words the file with the word embeddings contains or allow
-the computer to calculate the number of valid words.  Valid words are words with only letters.  If the user enters fewer lines
-then the file contains, then the number of WordEmbedding inserted will stop after the load factor is reached. If unsure,
-please let the program count the number of valid words.
-
-After the hash table is populated, searches for the pairs and their computations will occur. Note that after all 
-searches have been made and the entire file with the word pairs has been read, the program will terminate.  
-If the user entered pairs, the program will also terminate after finding the pairs and their similarity.
+2) Evaluate your own edit distance - This allows users to test the edit distance function. Users are given the option to
+   either enter two of their own words or select two string lengths.  If the user selects two string lengths, then random
+   words from a file will be used.  The user will be prompted to enter the directory of the file.  The WordSample.txt
+   file was used for the tests and can be found in the Files folder.  Additionally, Distribution.txt denotes
+   how many strings of a given length are included in WordSample.txt.  This is crucial since the program will not allow
+   words with an absence length to be tested.
+ 
+ 3) Run automated tests - allows users to run tests on any of the methods for the lab. For all automated tests,
+   if the user decides to print the graph, the graphs with 10 vertices will be drawn.  Only graphs with 10 vertices will
+   be drawn.  All other graph sizes will have the graph representation displayed.  Additionally, for the automated tests, the 
+   generalized randomization refers to the randomization algorithm that follows the provided pseudocode.
+   
+ Key points: Use the WordSample.txt file when deciding to run custom tests for the edit distance function. The 
+            Distribution.txt contains all words in the file of a given length. The generalized randomization refers
+            to the randomization funciton that follows the provided pseudocode and can be found in NicholeMaldonado7Lab7.py.
