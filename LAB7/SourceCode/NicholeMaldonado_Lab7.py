@@ -1,5 +1,5 @@
 # Course: CS2302 Data Structures
-# Date of Last Modification: November 29, 2019
+# Date of Last Modification: December 3, 2019
 # Assignment: Lab 7 - Algorithm Design Techniques
 # Author: Nichole Maldonado
 # Professor: Olac Fuentes
