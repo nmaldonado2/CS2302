@@ -65,7 +65,7 @@ class Graph:
     # a -1 to the cell that signifies the edge.
     # Input: The source and destination that form the edge.
     # Output: Returns True if the edge was successfully removed. False otherwise.
-    # Assume source and dest are within the bounds of the 2D am list.
+    # Assume source and dest are within the bounds of the 2D am.
     def delete_edge_(self, source, dest):
         if self.am[source][dest] == -1:
             return False
@@ -146,6 +146,24 @@ class Graph:
         plt.savefig(title, dpi = 200)
         plt.ioff()
     
+    # Function that determines if an undirected graph has at least enough
+    # vertices as edges.
+    # Input: None
+    # Output: Returns True if a graph has at least enough edges as vertices.
+    #         False is returned otherwise.
+    def enough_edges(self):
+        num_edges = 0
+        for i in range(len(self.am)):
+            for j in range(i, len(self.am[i])):
+                if self.am[i][j] != -1:
+                    num_edges += 1
+                    
+                    # If the number of edges is greater than or equal to the
+                    # number of vertices then 
+                    if num_edges >= len(self.am):
+                        return True
+        return num_edges >= len(self.am)
+    
     # Function that generates a random subset graph of V edges where V is the
     # number of vertices. Assume the graph has at least V edges.
     # Input: None
@@ -195,16 +213,21 @@ class Graph:
     #         and a list of the edges. Otherwise, None, None is returned.
     # Assume the graph is undirected and has at least V number of edges where
     # V is the number of vertices.
-    def randomized_hamiltonian(self, test_trials = 1000):
+    def randomized_hamiltonian(self, test_graph = False, test_trials = 1000):
+        
+        # If the graph does not have enough edges to create a Hamiltonian cycle,
+        # then None, None is returned.
+        if not self.enough_edges():
+            return None, None
+        
         for i in range(test_trials):
             
             # Generates a random subset.
             subset_graph, edges_hash_table = self.generate_random_subset()
             
-            # Checks if the subset graph contains a Hamiltonian cycle.
+            # Returns the subset_graph.
             if not subset_graph is None:
-                if edges_hash_table.correct_num_edges():
-                    return subset_graph, edges_hash_table.format_elements()
+                return subset_graph, edges_hash_table.format_elements()
         return None, None
     
     # Function that uses backtracking to determine if a Hamiltonian cycle exists.

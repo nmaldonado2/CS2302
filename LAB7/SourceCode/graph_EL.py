@@ -425,7 +425,7 @@ class Graph:
             # Generates a random subset.
             subset_graph, edges_hash_table = self.generate_random_subset()
             
-            # Checks if the subset graph contains a Hamiltonian cycle.
+            # Returns subset_graph.
             if not subset_graph is None:
                 if len(subset_graph.el) == self.vertices:
                     return subset_graph, edges_hash_table.format_elements()

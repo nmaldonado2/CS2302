@@ -6,11 +6,11 @@
 # TA: Anindita Nath
 # Purpose: The purpose of this lab was to verify if a Hamiltonian cycle exists
 #          using randomization or identify if a Hamiltonian cycle exists using
-#           randomization.  Although the generalized randomization algorithm
+#           randomization. The generalized randomization algorithm
 #          follows the pseudocode provided and a function to evaluate the edit
 #          distance between two strings is defined in the file below. The main
-#          program allows user to test the randomization, bakctracking, and 
-#          dynammic programing edit distance functions and create their own
+#          program allows user to test the randomization, backtracking,
+#          dynammic programing edit distance functions, and create their own
 #          tests.
 
 import graph_AL as al
@@ -80,8 +80,6 @@ def edit_distance(s1,s2):
 # Output: The subset graph populated with the edges.
 # Assume E does not contain duplicate edges.
 def generate_random_subset(V, E):
-    if len(E) < V:
-        return None
     num_vertices = V
     forest = dj.DSF(V)
     if len(E) > 0 and E[0][2] == 1:
@@ -115,17 +113,18 @@ def generate_random_subset(V, E):
 
 # Function that validates if a Hamiltonian path exists based on the edges and
 # vertices provided.
-# Input: The number of vertices that hte graph will contain and the list of 
+# Input: The number of vertices that the graph will contain and the list of 
 #        edges.
 # Output: The subset graph and cycle will be returned if a cycle is found.
 #          Otherwise None, None will be returned.
 def randomized_hamiltonian(V, E, test_trials = 1000):
+    if len(E) < V:
+        return None
     for i in range(test_trials):
         subset_graph = generate_random_subset(V, E)
 
         if not subset_graph is None:
-            if subset_graph.correct_num_in_degrees():
-                return subset_graph, subset_graph.al_to_cycle()
+            return subset_graph, subset_graph.al_to_cycle()
     return None, None
 
 # Function that returns the graph type based on the graph representation.
@@ -196,14 +195,14 @@ def compute_edge_combos(num_vertices, num_edges, edges_hash_table, only_al = Fal
 #        determines whether the cycle will be printed, and the boolean small_graph
 #        which determines whether or not the graph will drawn.
 # Output: None
-# Assume list_of_graphs is a list with graphs. For lab demo purposes, graphs
-# with only ten edges will be printed.
+# Assume list_of_graphs is a list with undirected graphs. For lab demo purposes,
+# graphs with only ten edges will be printed.
 def randomization_test(list_of_graphs, print_edges, small_graph):
     
     # Runs the tests for radomization for each graph.
     for graph in list_of_graphs:
         graph_type = representation_to_text(graph.representation)
-        print(graph_type, end = ":")
+        print(graph_type, end = ":\n")
         start_time = time.perf_counter()
         subset_graph, subset_edges = graph.randomized_hamiltonian()
         end_time = time.perf_counter()
@@ -213,6 +212,7 @@ def randomization_test(list_of_graphs, print_edges, small_graph):
             print("Edges:", subset_edges, "\n")
 
             if small_graph and not subset_graph is None:
+                print("The subset graph will be stored in the current directory.\n")
                 subset_graph.draw()
         else:
             print()
@@ -237,7 +237,7 @@ def randomization_generalized_test(V, E, print_edges, small_graph):
         print("Edges:", subset_edges, "\n")
 
         if small_graph and not subset_graph is None:
-            print("The subset graph will be stored in the current directory.")
+            print("The subset graph will be stored in the current directory.\n")
             subset_graph.draw()
     else:
         print()
@@ -293,6 +293,7 @@ def display_edge_list(edge_combos):
 #        words containing all the words, and the number of trials to be run.
 # Output: None, other than the matrix and the distance will be displayed.
 def edit_distance_test(print_matrix, word_length_one, word_length_two, words, num_trials):
+    
     # Ensures that the hash table words contains at least one word of each
     # word length.
     if (word_length_one >= len(words.bucket) or word_length_two >= len(words.bucket)
@@ -407,7 +408,7 @@ def edit_distance_setup(print_matrix, word_length_one, word_length_two, custom_t
         else:
             run_automated_edit_distance(print_matrix, word_length_one, words)
     else:
-        print("Invalid user input. Program terminating.")
+        print("Program terminating.")
     
 
 # Function that initiates the tests for the generalized randomization.
@@ -526,6 +527,7 @@ def randomization_varying_trials_test(list_of_graphs, print_edges, small_graph):
             print("Edges:", subset_edges, "\n")
 
             if small_graph and not subset_graph is None:
+                print("The subset graph will be stored in the current directory.\n")
                 subset_graph.draw()
         else:
             print("Found Cycle: ", end = "")
@@ -547,6 +549,7 @@ def randomization_varying_trials_test(list_of_graphs, print_edges, small_graph):
             print("Edges:", subset_edges, "\n")
 
             if small_graph and not subset_graph is None:
+                print("The subset graph will be stored in the current directory.\n")
                 subset_graph.draw()
         else:
             print("Found Cycle: ", end = "")
@@ -568,6 +571,7 @@ def randomization_varying_trials_test(list_of_graphs, print_edges, small_graph):
             print("Edges:", subset_edges, "\n")
 
             if small_graph and not subset_graph is None:
+                print("The subset graph will be stored in the current directory.\n")
                 subset_graph.draw()
         else:
             print("Found Cycle: ", end = "")
@@ -810,11 +814,11 @@ def generate_test_graphs_with_hamiltonian(graph_size):
 # Output: None
 def automated_test_setup():
     print("Select a function to test")
-    print("1. Generalized Randomization Hamiltonian Path")
-    print("2. Generalized Randomization Hamiltonian Path with Reduced Edges")
-    print("3. Randomization Hamiltonian Path with Set Trials")
-    print("4. Randomization Hamiltonian Path with Varying Trials")
-    print("5. Backtracking Hamiltonian Path")
+    print("1. Generalized Randomization Hamiltonian Cycle")
+    print("2. Generalized Randomization Hamiltonian Cycle with Reduced Edges")
+    print("3. Randomization Hamiltonian Cycle with Set Trials")
+    print("4. Randomization Hamiltonian Cycle with Varying Trials")
+    print("5. Backtracking Hamiltonian Cycle")
     print("6. Edit Distance")
     
     menu = int(input("Select 1 - 6: "))
@@ -930,8 +934,9 @@ def automated_test_setup():
 #        users choice, the size of the graphs, and the edge factor.
 # Output: None.
 def run_custom_randomization(list_of_graphs, graph_size, edge_factor):
-    generate_custom_test_graphs(list_of_graphs[0], graph_size, edge_factor)
-    generate_custom_graph_with_hamiltonian(list_of_graphs[1], graph_size, edge_factor)
+    generate_custom_graph_with_hamiltonian(list_of_graphs[0], graph_size, edge_factor)
+    generate_custom_test_graphs(list_of_graphs[1], graph_size, edge_factor)
+    
     
     print("---------------------------------------------")
     print("|    Graph with Known Hamiltonian Cycles    |")
@@ -974,8 +979,9 @@ def run_custom_randomization(list_of_graphs, graph_size, edge_factor):
 #        users choice, the size of the graphs, and the edge factor.
 # Output: None.
 def run_custom_backtracking(list_of_graphs, graph_size, edge_factor, start_vertex):
-    generate_custom_test_graphs(list_of_graphs[0], graph_size, edge_factor)
-    generate_custom_graph_with_hamiltonian(list_of_graphs[1], graph_size, edge_factor)
+    generate_custom_graph_with_hamiltonian(list_of_graphs[0], graph_size, edge_factor)
+    generate_custom_test_graphs(list_of_graphs[1], graph_size, edge_factor)
+    
     
     print("---------------------------------------------")
     print("|    Graph with Known Hamiltonian Cycles    |")
@@ -1021,7 +1027,7 @@ def run_custom_backtracking(list_of_graphs, graph_size, edge_factor, start_verte
 def generate_custom_graph_with_hamiltonian(list_of_graphs, graph_size, edge_factor):
     
     # Receives edges with a Hamiltonian cycle.
-    edge_combos = generate_hamiltonian_cycle(graph_size, edge_factor)
+    edge_combos = generate_hamiltonian_cycle(graph_size, edge_factor = edge_factor)
     
     # Populates the graphs.
     for i in range(len(list_of_graphs)):

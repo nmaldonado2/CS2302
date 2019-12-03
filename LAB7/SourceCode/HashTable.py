@@ -82,17 +82,6 @@ class HashTableChain(object):
         # Inserts word in appropriate bucket (list) 
         b = self.h(len(word))
         self.bucket[b].append(word)
-
-    # Counts the number of elements in each bucket which represent the number
-    # of edges. If a bucket does not have two elements, False is returned.
-    # Input: None
-    # Output: Returns true if all buckets have two elements. False is otherwise
-    #         returned.
-    def correct_num_edges(self):
-        for bucket in self.bucket:
-            if len(bucket) != 2:
-                return False
-        return True
     
     # Formats the elements in each bucket to demonstrate a cycle of edges.
     # Input: None

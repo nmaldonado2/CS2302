@@ -148,18 +148,6 @@ class Graph:
         title = "al" + datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
         plt.savefig(title, dpi = 200)
         plt.ioff()
-
-    # Function that ensures that each vertex of an undirected graph has an
-    # indegree of two.
-    # Input: None
-    # Output: A boolean that is true, if the indegree of each vertex is two
-    #         or false otherwise.
-    # Assume that the graph is undirected.
-    def correct_num_in_degrees(self):
-        for edges in self.al:
-            if len(edges) != 2:
-                return False
-        return True
     
     # Function that inserts an edge into a graph and ensures that the edge does
     # not exist in the graph.
@@ -184,6 +172,24 @@ class Graph:
             self.al[source].append(Edge(dest,weight)) 
             return 1
     
+    # Function that determines if there are at least as many edges as vertices.
+    # Input: None
+    # Output: True if there are at least as many edges as vertices. False is 
+    #         returned otherwise or if a vertex has 0 or 1 edge, since it
+    #         cannot contain a Hamiltonian cycle.
+    def enough_edges(self):
+        num_edges = 0
+        for i in range(len(self.al)):
+            
+            # A graph cannot contain a Hamiltonian cycle if it has a vertex
+            # with 0 or 1 edge.
+            if len(self.al[i]) <= 1:
+                return False
+            num_edges += len(self.al[i])
+            if (num_edges // 2) >= len(self.al):
+                return True
+        return (num_edges // 2) >= len(self.al)
+    
     # Function that generates a random subset graph of V edges where V is the
     # number of vertices. Assume the graph has at least V edges.
     # Input: None
@@ -191,7 +197,8 @@ class Graph:
     #         a maximum only contains a cycle connecting the first and last
     #         vertex, then the populated adjacency list graph is returned.
     #         Otherwise None is returned.
-    # For undirected graphs only. Assume the graph has at least V edges.
+    # For undirected graphs only. Assume the adjacency list does not contain
+    # duplicate edges.
     def generate_random_subset(self):
         num_vertices = len(self.al)
         forest = djsf.DSF(len(self.al))
@@ -258,18 +265,22 @@ class Graph:
     # Input: The number of trials which is defaulted to 1000.
     # Output: The subset graph conatining the Hamiltonian cycle, if it exists,
     #         and a list of the edges. Otherwise, None, None is returned.
-    # Assume the graph is undirected and has at least V number of edges where
-    # V is the number of vertices.
+    # Assume the graph is undirected and does not contain duplicate edges.
     def randomized_hamiltonian(self, test_trials = 1000):
+        
+        # If the graph does not have enough edges to create a Hamiltonian cycle,
+        # then None, None is returned.
+        if not self.enough_edges():
+            return None, None
+        
         for i in range(test_trials):
             
             # Generates a random subset.
             subset_graph = self.generate_random_subset()
             
-            # Checks if the subset graph contains a Hamiltonian cycle.
+            # Checks returns subset_graph that contains a Hamiltonian path.
             if not subset_graph is None:
-                if subset_graph.correct_num_in_degrees():
-                    return subset_graph, subset_graph.al_to_cycle()
+                return subset_graph, subset_graph.al_to_cycle()
         return None, None
     
     # Function that determines if an edge exists between source and target in
@@ -304,7 +315,7 @@ class Graph:
         if len(self.al[curr_vertex]) <= 1:
             return None, -1
         
-        # Iterates through the adjacent edges and if they do not create a
+        # Iterates through the adjacent edges. If they do not create a
         # a cycle and the destination vertices have not been visited, then
         # a recursive call is made.
         for edge in self.al[curr_vertex]:
