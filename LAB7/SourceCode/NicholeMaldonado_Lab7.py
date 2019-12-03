@@ -117,10 +117,10 @@ def generate_random_subset(V, E):
 #        edges.
 # Output: The subset graph and cycle will be returned if a cycle is found.
 #          Otherwise None, None will be returned.
-def randomized_hamiltonian(V, E, test_trials = 1000):
+def randomized_hamiltonian(V, E):
     if len(E) < V:
         return None
-    for i in range(test_trials):
+    for i in range(10000):
         subset_graph = generate_random_subset(V, E)
 
         if not subset_graph is None:
@@ -208,6 +208,12 @@ def randomization_test(list_of_graphs, print_edges, small_graph):
         end_time = time.perf_counter()
         print("Runtime: %0.6f seconds"%(end_time - start_time))
         
+        print("Found cycle: ", end = "")
+        if not subset_graph is None:
+            print("True")
+        else:
+            print("False")
+        
         if print_edges:
             print("Edges:", subset_edges, "\n")
 
@@ -231,6 +237,12 @@ def randomization_generalized_test(V, E, print_edges, small_graph):
     subset_graph, subset_edges = randomized_hamiltonian(V, E)
     end_time = time.perf_counter()
     print("Runtime: %0.6f seconds"%(end_time - start_time))
+    
+    print("Found cycle: ", end = "")
+    if not subset_graph is None:
+        print("True")
+    else:
+        print("False")
     
     # Prints the edges that create a cycle.
     if print_edges:
