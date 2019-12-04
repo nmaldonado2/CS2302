@@ -1092,7 +1092,7 @@ def graph_attributes():
             print("The edge factor must be in the given range. Program terminating")
             return None, None
     else:
-        print("The graph must have at least two vertices. Program terminating")
+        print("The graph must have more than two vertices. Program terminating")
         return None, None
     return size, edge_factor
 
