@@ -1,3 +1,6 @@
+
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab3.py. The NicholeMaldonado_SortedList.py is necessary for the
 Node, SortedList, and List objects used in the program.
 
