@@ -1,3 +1,5 @@
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab6.py. The graph_AL.py, graph_EL.py graph_AM.py, HashTable.py, and
 test_graphs.py are necessary for the program's implementaton.
 
