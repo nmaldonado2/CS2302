@@ -1,4 +1,4 @@
-#Instructions
+# Instructions
 
 Both Part 1's and Part 2's program must be run seperately.
 
