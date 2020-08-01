@@ -1,3 +1,6 @@
+
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab2.py. The NicholeMaldonado_activationStack.py is necessary for the
 Stack and Record objects used in the program.
 
