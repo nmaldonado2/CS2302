@@ -1,3 +1,5 @@
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab5.py. The HashTableChainClass.py, HashTableLP.py, and WordEmbedding.py
 are necessary for the HashTableChain, HashTableLP, and WordEmbedding objects used in the program.
 
