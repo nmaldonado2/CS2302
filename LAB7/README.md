@@ -1,3 +1,5 @@
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab7.py. The HashTable.py, graph_AL, graph_AM.py, graph_EL.py,
 and DisjointSetForest.py are necessary for the HashTableChain, adjacency list, adjcency matrix, edge list, and
 DSF objects used in the program.
