@@ -1,3 +1,5 @@
+# Instructions
+
 The main program is implemented in NicholeMaldonado_Lab4.py. The BSTClass.py, BTreeClass.py, and WordEmbedding.py
 are necessary for the BST, BTree, and WordEmbedding objects used in the program.
 
